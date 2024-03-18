@@ -96,7 +96,7 @@ public class AssetmanagementApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AssetmanagementApplication.class, args);
 
-        showAccounts();
+//        showAccounts();
 
 
 //		String token = null;
