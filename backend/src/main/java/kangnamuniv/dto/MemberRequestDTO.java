@@ -10,4 +10,7 @@ public class MemberRequestDTO {
     private String businessType;
     private String loginType;
     private String organization;
+    private String birthday;    //yymmdd
+    private String id;
+    private String password;
 }
