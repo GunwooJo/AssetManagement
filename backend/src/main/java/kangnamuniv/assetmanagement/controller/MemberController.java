@@ -1,11 +1,10 @@
 package kangnamuniv.assetmanagement.controller;
 
 import kangnamuniv.assetmanagement.service.MemberService;
-import kangnamuniv.dto.MemberRequestDTO;
+import kangnamuniv.assetmanagement.dto.MemberRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

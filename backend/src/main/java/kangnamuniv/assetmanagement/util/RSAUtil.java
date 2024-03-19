@@ -1,4 +1,4 @@
-package kangnamuniv.assetmanagement;
+package kangnamuniv.assetmanagement.util;
 
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;

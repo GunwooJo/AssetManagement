@@ -1,4 +1,4 @@
-package kangnamuniv.dto;
+package kangnamuniv.assetmanagement.dto;
 
 import lombok.Getter;
 import org.springframework.web.bind.annotation.RequestBody;

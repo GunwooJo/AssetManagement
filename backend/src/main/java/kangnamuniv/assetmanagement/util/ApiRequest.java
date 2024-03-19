@@ -1,4 +1,4 @@
-package kangnamuniv.assetmanagement;
+package kangnamuniv.assetmanagement.util;
 
 import java.io.IOException;
 import java.net.URLEncoder;

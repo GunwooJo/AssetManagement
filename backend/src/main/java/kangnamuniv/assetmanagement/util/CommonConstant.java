@@ -1,4 +1,4 @@
-package kangnamuniv.assetmanagement;
+package kangnamuniv.assetmanagement.util;
 
 /**
  *	상수 클래스
