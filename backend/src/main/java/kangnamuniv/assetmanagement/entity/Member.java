@@ -11,10 +11,6 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "access_token_id")
-    private AccessToken accessToken;
-
     private String login_id;
 
     private String password;
