@@ -1,7 +1,12 @@
 package kangnamuniv.assetmanagement.controller;
 
+import kangnamuniv.assetmanagement.dto.MemberRegisterDTO;
+import kangnamuniv.assetmanagement.dto.TokenResponse;
+import kangnamuniv.assetmanagement.dto.MemberLoginDTO;
+import kangnamuniv.assetmanagement.entity.Member;
 import kangnamuniv.assetmanagement.service.MemberService;
 import kangnamuniv.assetmanagement.dto.MemberRequestDTO;
+import kangnamuniv.assetmanagement.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,5 +30,28 @@ public class MemberController {
 
         String connectedId = memberService.generateConnectedId(businessType, loginType, organization, id, password, birthday);
         return ResponseEntity.status(HttpStatus.CREATED).body(connectedId);
+    }
+
+    @PostMapping("/member/register")
+    public ResponseEntity<String> register(@RequestBody MemberRegisterDTO memberRegisterDTO) {
+
+        Member member = MemberRegisterDTO.toMember(memberRegisterDTO);
+        try {
+            memberService.registerMember(member);
+            return ResponseEntity.status(HttpStatus.CREATED).body("회원가입에 성공했어요!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 존재하는 아이디에요. 다른 아이디를 입력해주세요!");
+        }
+    }
+
+    @PostMapping("/member/login")
+    public ResponseEntity<?> login(@RequestBody MemberLoginDTO memberLoginDTO) {
+        // Here, add your authentication logic (e.g., check username and password against the database)
+        // For simplicity, I'm skipping actual authentication. In real scenarios, validate user credentials.
+
+        String token = JwtUtil.generateToken(memberLoginDTO.getLogin_id());
+        TokenResponse tokenResponse = new TokenResponse(token);
+        return ResponseEntity.ok(tokenResponse);
     }
 }
