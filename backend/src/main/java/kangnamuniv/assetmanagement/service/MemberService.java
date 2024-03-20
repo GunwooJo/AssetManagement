@@ -4,6 +4,7 @@ import kangnamuniv.assetmanagement.entity.Member;
 import kangnamuniv.assetmanagement.repository.MemberRepository;
 import kangnamuniv.assetmanagement.util.ApiRequest;
 import kangnamuniv.assetmanagement.util.CommonConstant;
+import kangnamuniv.assetmanagement.util.PasswordUtil;
 import kangnamuniv.assetmanagement.util.RSAUtil;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.ParseException;
@@ -74,6 +75,8 @@ public class MemberService {
             throw new Exception("이미 존재하는 아이디입니다.");
         }
         else {
+            String hashedPassword = PasswordUtil.hashPassword(member.getPassword());
+            member.setPassword(hashedPassword);
             memberRepository.save(member);
         }
     }
