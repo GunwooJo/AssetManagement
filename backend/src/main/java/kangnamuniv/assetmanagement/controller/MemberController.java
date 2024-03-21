@@ -47,11 +47,18 @@ public class MemberController {
 
     @PostMapping("/member/login")
     public ResponseEntity<?> login(@RequestBody MemberLoginDTO memberLoginDTO) {
-        // Here, add your authentication logic (e.g., check username and password against the database)
-        // For simplicity, I'm skipping actual authentication. In real scenarios, validate user credentials.
 
-        String token = JwtUtil.generateToken(memberLoginDTO.getLogin_id());
-        TokenResponse tokenResponse = new TokenResponse(token);
-        return ResponseEntity.ok(tokenResponse);
+        Member member = MemberLoginDTO.toMember(memberLoginDTO);
+        boolean isPasswordValid = memberService.passwordValidation(member);
+
+        if(isPasswordValid) {
+            String token = JwtUtil.generateToken(memberLoginDTO.getLogin_id());
+            TokenResponse tokenResponse = new TokenResponse(token);
+            return ResponseEntity.ok(tokenResponse);
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("아이디나 비밀번호를 다시 확인해주세요.");
+        }
+
     }
 }
