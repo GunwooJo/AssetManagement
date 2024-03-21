@@ -2,9 +2,10 @@ package kangnamuniv.assetmanagement.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Getter
+@Getter @Setter
 public class Member {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +17,8 @@ public class Member {
     private String password;
 
     private String name;
+
+    private int age;
 
     private String connected_id;
 

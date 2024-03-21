@@ -1,8 +1,9 @@
 package kangnamuniv.assetmanagement.service;
 
-import kangnamuniv.assetmanagement.util.ApiRequest;
-import kangnamuniv.assetmanagement.util.CommonConstant;
-import kangnamuniv.assetmanagement.util.RSAUtil;
+import kangnamuniv.assetmanagement.entity.Member;
+import kangnamuniv.assetmanagement.repository.MemberRepository;
+import kangnamuniv.assetmanagement.util.*;
+import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,10 @@ import java.util.HashMap;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class MemberService {
+
+    private final MemberRepository memberRepository;
 
     public String generateConnectedId(String businessType, String loginType, String organization, String id, String password, String birthday) {
         String urlPath = "https://development.codef.io/v1/account/create";
@@ -57,5 +61,28 @@ public class MemberService {
             return result;
         }
 
+    }
+
+    public void registerMember(Member member) throws Exception {
+
+        String loginId = member.getLogin_id();
+        List<Member> foundMembers = memberRepository.findByLoginId(loginId);
+
+        if(!foundMembers.isEmpty()) {
+            throw new Exception("이미 존재하는 아이디입니다.");
+        }
+        else {
+            String hashedPassword = PasswordUtil.hashPassword(member.getPassword());
+            member.setPassword(hashedPassword);
+            memberRepository.save(member);
+        }
+    }
+
+    public boolean passwordValidation(Member member) {
+        List<Member> foundMembers = memberRepository.findByLoginId(member.getLogin_id());
+        Member foundMember = foundMembers.get(0);
+        boolean matches = PasswordUtil.matches(member.getPassword(), foundMember.getPassword());
+        if(matches) return true;
+        else return false;
     }
 }
