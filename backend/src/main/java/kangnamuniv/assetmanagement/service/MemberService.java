@@ -2,10 +2,7 @@ package kangnamuniv.assetmanagement.service;
 
 import kangnamuniv.assetmanagement.entity.Member;
 import kangnamuniv.assetmanagement.repository.MemberRepository;
-import kangnamuniv.assetmanagement.util.ApiRequest;
-import kangnamuniv.assetmanagement.util.CommonConstant;
-import kangnamuniv.assetmanagement.util.PasswordUtil;
-import kangnamuniv.assetmanagement.util.RSAUtil;
+import kangnamuniv.assetmanagement.util.*;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
@@ -79,5 +76,13 @@ public class MemberService {
             member.setPassword(hashedPassword);
             memberRepository.save(member);
         }
+    }
+
+    public boolean passwordValidation(Member member) {
+        List<Member> foundMembers = memberRepository.findByLoginId(member.getLogin_id());
+        Member foundMember = foundMembers.get(0);
+        boolean matches = PasswordUtil.matches(member.getPassword(), foundMember.getPassword());
+        if(matches) return true;
+        else return false;
     }
 }
