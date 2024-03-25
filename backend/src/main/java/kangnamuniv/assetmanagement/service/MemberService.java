@@ -46,4 +46,8 @@ public class MemberService {
         if(matches) return true;
         else return false;
     }
+
+    public void saveConnectedId(String login_id, String connected_id) {
+        memberRepository.saveConnectedId(login_id, connected_id);
+    }
 }
