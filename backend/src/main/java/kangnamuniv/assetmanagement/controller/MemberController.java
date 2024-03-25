@@ -6,7 +6,7 @@ import kangnamuniv.assetmanagement.dto.TokenResponse;
 import kangnamuniv.assetmanagement.dto.MemberLoginDTO;
 import kangnamuniv.assetmanagement.entity.Member;
 import kangnamuniv.assetmanagement.service.MemberService;
-import kangnamuniv.assetmanagement.dto.MemberRequestDTO;
+import kangnamuniv.assetmanagement.dto.AccountRequestDTO;
 import kangnamuniv.assetmanagement.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,20 +18,6 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
-
-    @PostMapping("/member/connected-id/generate")
-    public ResponseEntity<String> generateConnectedId(@RequestBody MemberRequestDTO memberRequestDTO) {
-
-        String businessType = memberRequestDTO.getBusinessType();
-        String loginType = memberRequestDTO.getLoginType();
-        String organization = memberRequestDTO.getOrganization();
-        String id = memberRequestDTO.getId();
-        String password = memberRequestDTO.getPassword();
-        String birthday = memberRequestDTO.getBirthday();
-
-        String connectedId = memberService.addAccount(businessType, loginType, organization, id, password, birthday);
-        return ResponseEntity.status(HttpStatus.CREATED).body(connectedId);
-    }
 
     @PostMapping("/member/register")
     public ResponseEntity<String> register(@Valid @RequestBody MemberRegisterDTO memberRegisterDTO) {
