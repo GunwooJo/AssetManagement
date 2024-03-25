@@ -1,5 +1,6 @@
 package kangnamuniv.assetmanagement.controller;
 
+import jakarta.validation.Valid;
 import kangnamuniv.assetmanagement.dto.MemberRegisterDTO;
 import kangnamuniv.assetmanagement.dto.TokenResponse;
 import kangnamuniv.assetmanagement.dto.MemberLoginDTO;
@@ -33,7 +34,7 @@ public class MemberController {
     }
 
     @PostMapping("/member/register")
-    public ResponseEntity<String> register(@RequestBody MemberRegisterDTO memberRegisterDTO) {
+    public ResponseEntity<String> register(@Valid @RequestBody MemberRegisterDTO memberRegisterDTO) {
 
         Member member = MemberRegisterDTO.toMember(memberRegisterDTO);
         try {
