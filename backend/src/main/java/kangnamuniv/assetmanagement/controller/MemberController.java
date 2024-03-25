@@ -29,7 +29,7 @@ public class MemberController {
         String password = memberRequestDTO.getPassword();
         String birthday = memberRequestDTO.getBirthday();
 
-        String connectedId = memberService.generateConnectedId(businessType, loginType, organization, id, password, birthday);
+        String connectedId = memberService.addAccount(businessType, loginType, organization, id, password, birthday);
         return ResponseEntity.status(HttpStatus.CREATED).body(connectedId);
     }
 
@@ -47,7 +47,7 @@ public class MemberController {
     }
 
     @PostMapping("/member/login")
-    public ResponseEntity<?> login(@RequestBody MemberLoginDTO memberLoginDTO) {
+    public ResponseEntity<?> login(@Valid @RequestBody MemberLoginDTO memberLoginDTO) {
 
         Member member = MemberLoginDTO.toMember(memberLoginDTO);
         boolean isPasswordValid = memberService.passwordValidation(member);
