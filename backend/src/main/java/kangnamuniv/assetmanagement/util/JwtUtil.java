@@ -2,15 +2,22 @@ package kangnamuniv.assetmanagement.util;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+
 import java.security.Key;
 import java.util.Date;
 
 public class JwtUtil {
 
-    // Generate a secure key. Ideally, this key should be stored outside the source code,
-    // in a configuration file or environment variable for better security.
-    private static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    @Value("${jwt.secret}")
+    private static String secretKey;
+
+    private static Key getSigningKey() {
+        // Assumes your key is Base64-encoded; decode if necessary
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+    }
 
     public static String generateToken(String login_id) {
         long expirationTime = 1000 * 60 * 30; // Token validity 30 minutes.
@@ -19,7 +26,7 @@ public class JwtUtil {
                 .setSubject(login_id)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
-                .signWith(key) // Use the generated key
+                .signWith(getSigningKey()) // Use the generated key
                 .compact();
     }
 
@@ -27,7 +34,7 @@ public class JwtUtil {
         try {
             // This line will throw an exception if it is not a signed JWS (as expected)
             Jwts.parserBuilder()
-                    .setSigningKey(key) // Set the same key as the one used while creating the token
+                    .setSigningKey(getSigningKey()) // Set the same key as the one used while creating the token
                     .build()
                     .parseClaimsJws(token);
             return true;
@@ -41,7 +48,7 @@ public class JwtUtil {
     //토큰을 검증하고 검증이 완료되면 이 메서드를 통해 요청자의 이름을 얻어내고, Role, Permission 등 다양한 정보를 얻어서 특정 자료에 접근 가능하게 할 것인지 결정할 수 있다.
     public static String getLoginIdFromToken(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
