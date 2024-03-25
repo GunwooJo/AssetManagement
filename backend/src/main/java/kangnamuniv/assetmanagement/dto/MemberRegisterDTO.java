@@ -1,6 +1,7 @@
 package kangnamuniv.assetmanagement.dto;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import kangnamuniv.assetmanagement.entity.Member;
 import lombok.Getter;
@@ -19,7 +20,7 @@ public class MemberRegisterDTO {
     private String name;
 
     @NotNull(message = "age cannot be null")
-    private int age;
+    private Integer age;
 
     public static Member toMember(MemberRegisterDTO memberRegisterDTO) {
         Member member = new Member();
