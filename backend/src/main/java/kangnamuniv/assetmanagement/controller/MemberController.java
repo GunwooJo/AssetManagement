@@ -6,7 +6,6 @@ import kangnamuniv.assetmanagement.dto.TokenResponse;
 import kangnamuniv.assetmanagement.dto.MemberLoginDTO;
 import kangnamuniv.assetmanagement.entity.Member;
 import kangnamuniv.assetmanagement.service.MemberService;
-import kangnamuniv.assetmanagement.dto.AccountRequestDTO;
 import kangnamuniv.assetmanagement.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
+    private final JwtUtil jwtUtil;
 
     @PostMapping("/member/register")
     public ResponseEntity<String> register(@Valid @RequestBody MemberRegisterDTO memberRegisterDTO) {
@@ -39,7 +39,7 @@ public class MemberController {
         boolean isPasswordValid = memberService.passwordValidation(member);
 
         if(isPasswordValid) {
-            String token = JwtUtil.generateToken(memberLoginDTO.getLogin_id());
+            String token = jwtUtil.generateToken(memberLoginDTO.getLogin_id());
             TokenResponse tokenResponse = new TokenResponse(token);
             return ResponseEntity.ok(tokenResponse);
         }
