@@ -133,4 +133,37 @@ public class AccountService {
         }
 
     }
+
+    //특정 connectedId로 등록한 계정(기관)들 확인
+    public JSONArray findAccountsByConnectedId(String connectedId) throws Exception{
+        String urlPath = "https://development.codef.io/v1/account/list";
+
+        HashMap<String, Object> bodyMap = new HashMap<String, Object>();
+
+        bodyMap.put("connectedId", connectedId);
+
+        JSONParser parser = new JSONParser();
+
+        try {
+            String response = ApiRequest.request(urlPath, bodyMap);
+            JSONObject jsonResponse = (JSONObject) parser.parse(response);
+            JSONObject resResult = (JSONObject) jsonResponse.get("result");
+            String resMessage = resResult.get("message").toString();
+
+            //다른 resMessage는 무엇이 나올 수 있는지 알아봐야함.
+            if(resMessage.equals("성공")) {
+
+                JSONObject resData = (JSONObject) jsonResponse.get("data");
+                JSONArray accountList = (JSONArray) resData.get("accountList");
+
+                return accountList;
+            } else {
+                throw new Exception("connectedId로 등록된 계정들 조회 실패");
+            }
+
+        } catch (IOException | InterruptedException | ParseException e) {
+            log.error("CODEF 서버로 요청 실패 " + e);
+            throw new Exception("Request to CODEF server failed: " + e.getMessage(), e);
+        }
+    }
 }
