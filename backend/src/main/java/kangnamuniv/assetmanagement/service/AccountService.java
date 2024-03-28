@@ -28,7 +28,6 @@ public class AccountService {
 
     //계정을 등록하여 connectedId 발급.
     public String addAccount(String businessType, String loginType, String organization, String id, String password, String birthday, String clientType) throws Exception{
-        System.out.println("커넥티드 아이디 없는 addAccount 호출");
         String urlPath = "https://development.codef.io/v1/account/create";
 
         HashMap<String, Object> bodyMap = new HashMap<String, Object>();
@@ -81,7 +80,6 @@ public class AccountService {
 
     //계정 최초 등록 후 발급된 connectedId로 기관을 추가로 등록하고 싶을 때 사용.
     public void addAccount(String businessType, String loginType, String organization, String id, String password, String birthday, String connectedId, String clientType) throws Exception{
-        System.out.println("커넥티드 아이디 넘어온 addAccount 호출");
         String urlPath = "https://development.codef.io/v1/account/add";
 
         HashMap<String, Object> bodyMap = new HashMap<String, Object>();
@@ -122,7 +120,6 @@ public class AccountService {
                 JSONObject resData = (JSONObject) jsonResponse.get("data");
                 JSONArray resErrorList = (JSONArray) resData.get("errorList");
                 JSONObject jsonObj = (JSONObject) resErrorList.get(0);
-                System.out.println("jsonObj = " + jsonObj);
                 String errorMessage = jsonObj.get("message").toString();
                 throw new Exception(errorMessage);
             }
