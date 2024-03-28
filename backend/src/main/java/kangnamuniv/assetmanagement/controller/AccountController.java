@@ -1,7 +1,6 @@
 package kangnamuniv.assetmanagement.controller;
 
 import kangnamuniv.assetmanagement.dto.AccountRequestDTO;
-import kangnamuniv.assetmanagement.dto.AccountResponseDTO;
 import kangnamuniv.assetmanagement.service.AccountService;
 import kangnamuniv.assetmanagement.service.MemberService;
 import kangnamuniv.assetmanagement.util.JwtUtil;
@@ -12,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
