@@ -27,7 +27,7 @@ public class AccountService {
 
 
     //계정을 등록하여 connectedId 발급.
-    public String addAccount(String businessType, String loginType, String organization, String id, String password, String birthday) throws Exception{
+    public String addAccount(String businessType, String loginType, String organization, String id, String password, String birthday, String clientType) throws Exception{
         System.out.println("커넥티드 아이디 없는 addAccount 호출");
         String urlPath = "https://development.codef.io/v1/account/create";
 
@@ -37,7 +37,7 @@ public class AccountService {
         HashMap<String, Object> accountMap = new HashMap<String, Object>();
         accountMap.put("countryCode",	"KR");
         accountMap.put("businessType",	businessType);
-        accountMap.put("clientType",  	"P");
+        accountMap.put("clientType",  	clientType);
         accountMap.put("organization",	organization);
         accountMap.put("loginType",  	loginType);
         accountMap.put("id", id);
@@ -80,7 +80,7 @@ public class AccountService {
     }
 
     //계정 최초 등록 후 발급된 connectedId로 기관을 추가로 등록하고 싶을 때 사용.
-    public void addAccount(String businessType, String loginType, String organization, String id, String password, String birthday, String connectedId) throws Exception{
+    public void addAccount(String businessType, String loginType, String organization, String id, String password, String birthday, String connectedId, String clientType) throws Exception{
         System.out.println("커넥티드 아이디 넘어온 addAccount 호출");
         String urlPath = "https://development.codef.io/v1/account/add";
 
@@ -90,7 +90,7 @@ public class AccountService {
         HashMap<String, Object> accountMap = new HashMap<String, Object>();
         accountMap.put("countryCode",	"KR");
         accountMap.put("businessType",	businessType);
-        accountMap.put("clientType",  	"P");
+        accountMap.put("clientType",  	clientType);
         accountMap.put("organization",	organization);
         accountMap.put("loginType",  	loginType);
         accountMap.put("id", id);

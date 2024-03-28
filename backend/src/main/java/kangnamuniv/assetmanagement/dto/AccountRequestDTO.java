@@ -16,6 +16,9 @@ public class AccountRequestDTO {
     private String organization;    // 기관코드
 
     @NotBlank
+    private String clientType;  //고객구분 개인: P(은행, 저축은행, 카드), 통합: A(증권, 보험)
+
+    @NotBlank
     private String birthday;    //yymmdd
 
     @NotBlank
