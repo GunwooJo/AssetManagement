@@ -24,6 +24,7 @@ public class AccountController {
     private final MemberService memberService;
     private final JwtUtil jwtUtil;
 
+    //계정(기관) 등록
     @PostMapping("/account/register")
     public ResponseEntity<String> register(@RequestHeader(value = "Authorization") String token, @RequestBody List<AccountRequestDTO> accountRequestDTOS) {
 
@@ -51,12 +52,12 @@ public class AccountController {
     private ResponseEntity<String> processAccountRegistration(String actualToken, AccountRequestDTO accountRequestDTO) {
         try {
             String connectedId = accountRequestDTO.getConnected_id();
-
+            //connectedId가 없을 경우 생성해서 db에 저장
             if (connectedId == null) {
                 connectedId = accountService.addAccount(accountRequestDTO.getBusinessType(), accountRequestDTO.getLoginType(), accountRequestDTO.getOrganization(), accountRequestDTO.getId(), accountRequestDTO.getPassword(), accountRequestDTO.getBirthday());
                 String loginIdFromToken = jwtUtil.getLoginIdFromToken(actualToken);
                 memberService.saveConnectedId(loginIdFromToken, connectedId);
-
+            //connectedId가 있을 경우 계정 추가 진행.
             } else {
                 accountService.addAccount(accountRequestDTO.getBusinessType(), accountRequestDTO.getLoginType(), accountRequestDTO.getOrganization(), accountRequestDTO.getId(), accountRequestDTO.getPassword(), accountRequestDTO.getBirthday(), connectedId);
             }

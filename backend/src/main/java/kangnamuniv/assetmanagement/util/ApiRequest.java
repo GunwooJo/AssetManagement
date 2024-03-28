@@ -39,7 +39,7 @@ public class ApiRequest {
             // 토큰 재발급 요청 수행
             accessToken = RequestToken.getToken(CommonConstant.CLIENT_ID, CommonConstant.SECERET_KEY);
             CommonConstant.ACCESS_TOKEN = accessToken;	// 재사용을 위한 발급받은 액세스 토큰 저장
-
+            System.out.println("재발급된 액세스토큰 = " + accessToken);
             // API 재요청
             json = (JSONObject)HttpRequest.post(urlPath, accessToken, bodyString);
             result = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);

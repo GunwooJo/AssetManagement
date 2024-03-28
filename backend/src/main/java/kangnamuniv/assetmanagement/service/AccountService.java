@@ -3,6 +3,7 @@ package kangnamuniv.assetmanagement.service;
 import kangnamuniv.assetmanagement.util.ApiRequest;
 import kangnamuniv.assetmanagement.util.CommonConstant;
 import kangnamuniv.assetmanagement.util.RSAUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -21,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Service
+@Slf4j
 public class AccountService {
 
 
@@ -127,6 +129,7 @@ public class AccountService {
 
         } catch (IOException | InterruptedException | ParseException e) {
             e.printStackTrace();
+            log.error("사용자 계정 정보 인증 실패: " + e);
         }
 
     }
