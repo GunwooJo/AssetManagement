@@ -49,6 +49,7 @@ public class ApiRequest {
             System.out.println("코드에프 대시보드의 API 설정을 통해 해당 업무 접근 권한을 설정해야 합니다.");
         }
 
+        System.out.println("API 요청 결과: = " + result);
         return result;
     }
 
