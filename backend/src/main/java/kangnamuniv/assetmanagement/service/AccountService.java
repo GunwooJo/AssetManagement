@@ -77,7 +77,6 @@ public class AccountService {
         try {
             String response = ApiRequest.request(urlPath, bodyMap);
             JSONObject jsonResponse = (JSONObject) parser.parse(response);
-            System.out.println("응답(json) = " + jsonResponse);
             //추후 수정 필요: 에러메시지의 유무에 따라 동작하도록.
             if(jsonResponse.containsKey("data")) {
 
