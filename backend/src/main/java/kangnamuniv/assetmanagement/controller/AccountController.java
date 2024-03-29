@@ -30,7 +30,7 @@ public class AccountController {
         String actualToken = token.substring(7);
 
         // Validate the token first
-        if (actualToken == null || !jwtUtil.validateToken(actualToken)) {
+        if (!jwtUtil.validateToken(actualToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("토큰이 유효하지 않습니다.");
         }
 
