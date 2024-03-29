@@ -133,4 +133,18 @@ public class AccountService {
             throw new Exception("Request to CODEF server failed: " + e.getMessage(), e);
         }
     }
+
+    public JSONObject findOwnAccountList(String organization, String birthDate, String token) throws IOException, ParseException, InterruptedException {
+        String urlPath = "https://development.codef.io/v1/kr/bank/p/account/account-list";
+        HashMap<String, Object> bodyMap = new HashMap<String, Object>();
+
+        String loginIdFromToken = jwtUtil.getLoginIdFromToken(token);
+        String foundConnectedId = memberService.getConnectedIdByLoginId(loginIdFromToken);
+
+        bodyMap.put("connectedId", foundConnectedId);
+        bodyMap.put("organization", organization);
+        bodyMap.put("birthDate", birthDate);
+
+        return ApiRequest.request2(urlPath, bodyMap);
+    }
 }

@@ -1,5 +1,6 @@
 package kangnamuniv.assetmanagement.controller;
 
+import kangnamuniv.assetmanagement.dto.AccountCheckDTO;
 import kangnamuniv.assetmanagement.dto.AccountRequestDTO;
 import kangnamuniv.assetmanagement.service.AccountService;
 import kangnamuniv.assetmanagement.service.MemberService;
@@ -7,6 +8,7 @@ import kangnamuniv.assetmanagement.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -82,4 +84,26 @@ public class AccountController {
 
         return ResponseEntity.status(HttpStatus.OK).body(foundAccounts);
     }
+
+    @PostMapping("/account/own/list")
+    public ResponseEntity<JSONObject> ownList(@RequestHeader("Authorization") String token,
+                                              @RequestBody AccountCheckDTO accountCheckDTO) {
+        if(!jwtUtil.isTokenValid(token)) {
+            JSONObject errorResponse = new JSONObject();
+            errorResponse.put("error", "토큰이 유효하지 않습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
+
+        try {
+            JSONObject ownAccountList = accountService.findOwnAccountList(accountCheckDTO.getOrganization(), accountCheckDTO.getBirthday(), token);
+            return ResponseEntity.status(HttpStatus.OK).body(ownAccountList);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            JSONObject errorResponse = new JSONObject();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+
+    }
+
 }
