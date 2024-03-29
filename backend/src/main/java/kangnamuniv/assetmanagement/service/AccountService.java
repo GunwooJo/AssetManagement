@@ -22,6 +22,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -70,17 +71,18 @@ public class AccountService {
             bodyMap.put("connectedId", foundConnectedId);
         }
 
-        // CODEF API 호출
         String connectedId = null;
         JSONParser parser = new JSONParser();
 
         try {
-            String response = ApiRequest.request(urlPath, bodyMap);
-            JSONObject jsonResponse = (JSONObject) parser.parse(response);
-            //추후 수정 필요: 에러메시지의 유무에 따라 동작하도록.
-            if(jsonResponse.containsKey("data")) {
+            // CODEF API 호출
+            JSONObject jsonResponse = ApiRequest.request2(urlPath, bodyMap);
+            JSONObject result = (JSONObject) jsonResponse.get("result");
+            String resCode = result.get("code").toString();
+            JSONObject data = (JSONObject)jsonResponse.get("data");
 
-                JSONObject data = (JSONObject)jsonResponse.get("data");
+            if(Objects.equals(resCode, "CF-00000") && jsonResponse.containsKey("data")) {
+
                 connectedId = data.get("connectedId").toString();
                 //유저가 connectedId를 갖고있지 않다면 발급된 connectedId 저장
                 if(!memberService.isConnectedIdExist(loginIdFromToken)) {
@@ -88,7 +90,8 @@ public class AccountService {
                 }
 
             } else {
-                throw new Exception("connectedId 속성을 찾을 수 없음.");
+                String resErrorList = data.get("errorList").toString();
+                throw new Exception(resErrorList);
             }
 
         } catch (Exception e) {
