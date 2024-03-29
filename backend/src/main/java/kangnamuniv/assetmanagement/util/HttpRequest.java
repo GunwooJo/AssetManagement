@@ -59,7 +59,7 @@ public class HttpRequest {
             br.close();
 
             // 응답 문자열 확인
-			System.out.println("RESPONSE_STRING : " + URLDecoder.decode(response.toString(), "UTF-8"));
+//			System.out.println("RESPONSE_STRING : " + URLDecoder.decode(response.toString(), "UTF-8"));
 
             // 응답 문자열 인코딩, JSONObject 변환
             JSONParser parser = new JSONParser();
