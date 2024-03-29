@@ -49,16 +49,7 @@ public class AccountController {
 
     private ResponseEntity<String> processAccountRegistration(String actualToken, AccountRequestDTO accountRequestDTO) {
         try {
-            String connectedId = accountRequestDTO.getConnected_id();
-            //connectedId가 없을 경우 생성해서 db에 저장
-            if (connectedId == null) {
-                connectedId = accountService.addAccount(accountRequestDTO.getBusinessType(), accountRequestDTO.getLoginType(), accountRequestDTO.getOrganization(), accountRequestDTO.getId(), accountRequestDTO.getPassword(), accountRequestDTO.getBirthday(), accountRequestDTO.getClientType());
-                String loginIdFromToken = jwtUtil.getLoginIdFromToken(actualToken);
-                memberService.saveConnectedId(loginIdFromToken, connectedId);
-                //connectedId가 있을 경우 계정 추가 진행.
-            } else {
-                accountService.addAccount(accountRequestDTO.getBusinessType(), accountRequestDTO.getLoginType(), accountRequestDTO.getOrganization(), accountRequestDTO.getId(), accountRequestDTO.getPassword(), accountRequestDTO.getBirthday(), connectedId, accountRequestDTO.getClientType());
-            }
+            accountService.addAccount(accountRequestDTO.getBusinessType(), accountRequestDTO.getLoginType(), accountRequestDTO.getOrganization(), accountRequestDTO.getId(), accountRequestDTO.getPassword(), accountRequestDTO.getBirthday(), accountRequestDTO.getClientType(), actualToken);
 
             return ResponseEntity.status(HttpStatus.CREATED).body("계정 등록이 완료되었습니다.");
 

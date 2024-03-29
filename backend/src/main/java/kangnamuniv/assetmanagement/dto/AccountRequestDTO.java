@@ -27,5 +27,4 @@ public class AccountRequestDTO {
     @NotBlank
     private String password;
 
-    private String connected_id;
 }

@@ -55,4 +55,9 @@ public class MemberService {
         Member foundMember = memberRepository.findByLoginId(login_id).get(0);
         return foundMember.getConnected_id();
     }
+
+    public boolean isConnectedIdExist(String login_id) {
+        String foundConnectedId = getConnectedIdByLoginId(login_id);
+        return foundConnectedId != null;
+    }
 }
