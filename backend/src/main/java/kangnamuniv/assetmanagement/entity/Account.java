@@ -12,6 +12,10 @@ public class Account {
     @Column(name = "account_id")
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @Column(name = "account_number")
     private String accountNumber;
 
