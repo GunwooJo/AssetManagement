@@ -24,6 +24,6 @@ public class Account {
     @Column(name = "account_type")
     private String accountType;
 
-    @Column(precision=17, scale=2)
+    @Column(precision=16, scale=2)
     private BigDecimal balance;
 }
