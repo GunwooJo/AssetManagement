@@ -1,5 +1,6 @@
 package kangnamuniv.assetmanagement.service;
 
+import kangnamuniv.assetmanagement.dto.TransactionCheckDTO;
 import kangnamuniv.assetmanagement.util.ApiRequest;
 import kangnamuniv.assetmanagement.util.CommonConstant;
 import kangnamuniv.assetmanagement.util.JwtUtil;
@@ -65,7 +66,6 @@ public class AccountService {
         //유저가 connectedId를 기존에 가지고 있었으면 해당 connectedId로 계정 추가.
         if(memberService.isConnectedIdExist(loginIdFromToken)) {
             urlPath = "https://development.codef.io/v1/account/add";
-            System.out.println("connectedId 발견!!");
             String foundConnectedId = memberService.getConnectedIdByLoginId(loginIdFromToken);
             System.out.println("foundConnectedId = " + foundConnectedId);
             bodyMap.put("connectedId", foundConnectedId);
@@ -144,6 +144,46 @@ public class AccountService {
         bodyMap.put("connectedId", foundConnectedId);
         bodyMap.put("organization", organization);
         bodyMap.put("birthDate", birthDate);
+
+        return ApiRequest.request2(urlPath, bodyMap);
+    }
+
+    public JSONObject getTransactionList(TransactionCheckDTO transactionCheckDTO, String token) throws IOException, ParseException, InterruptedException {
+        String urlPath = "https://development.codef.io/v1/kr/bank/p/account/transaction-list";
+        HashMap<String, Object> bodyMap = new HashMap<String, Object>();
+
+        String loginIdFromToken = jwtUtil.getLoginIdFromToken(token);
+        String foundConnectedId = memberService.getConnectedIdByLoginId(loginIdFromToken);
+
+        bodyMap.put("connectedId", foundConnectedId);
+        bodyMap.put("organization", transactionCheckDTO.getOrganization());
+        bodyMap.put("birthDate", transactionCheckDTO.getBirthday());
+        bodyMap.put("account", transactionCheckDTO.getAccount());
+        bodyMap.put("startDate", transactionCheckDTO.getStartDate());
+        bodyMap.put("endDate", transactionCheckDTO.getEndDate());
+        bodyMap.put("orderBy", transactionCheckDTO.getOrderBy());
+
+        if(transactionCheckDTO.getAccountPassword() != null) {
+            try {
+                bodyMap.put("accountPassword", RSAUtil.encryptRSA(transactionCheckDTO.getAccountPassword(), CommonConstant.PUBLIC_KEY));
+            } catch(NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException | InvalidKeyException |
+                    IllegalBlockSizeException | BadPaddingException e) {
+                log.error(e.getMessage());
+                throw new Error("계좌 비밀번호 RSA암호화 실패: " + e);
+            }
+        }
+
+        if(transactionCheckDTO.getWithdrawAccountNo() != null) {
+            bodyMap.put("withdrawAccountNo", transactionCheckDTO.getWithdrawAccountNo());
+        }
+
+        if (transactionCheckDTO.getWithdrawAccountPassword() != null) {
+            bodyMap.put("withdrawAccountPassword", transactionCheckDTO.getWithdrawAccountPassword());
+        }
+
+        if (transactionCheckDTO.getInquiryType() != null) {
+            bodyMap.put("inquiryType", transactionCheckDTO.getInquiryType());
+        }
 
         return ApiRequest.request2(urlPath, bodyMap);
     }

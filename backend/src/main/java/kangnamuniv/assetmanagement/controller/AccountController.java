@@ -2,6 +2,7 @@ package kangnamuniv.assetmanagement.controller;
 
 import kangnamuniv.assetmanagement.dto.AccountCheckDTO;
 import kangnamuniv.assetmanagement.dto.AccountRequestDTO;
+import kangnamuniv.assetmanagement.dto.TransactionCheckDTO;
 import kangnamuniv.assetmanagement.service.AccountService;
 import kangnamuniv.assetmanagement.service.MemberService;
 import kangnamuniv.assetmanagement.util.JwtUtil;
@@ -61,6 +62,7 @@ public class AccountController {
         }
     }
 
+    // connectedId로 등록된 기관(계정) 조회하기
     @GetMapping("/account/list")
     public ResponseEntity<Object> list(@RequestHeader("Authorization") String token) {
 
@@ -85,6 +87,7 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(foundAccounts);
     }
 
+    // 보유계좌 조회
     @PostMapping("/account/own/list")
     public ResponseEntity<JSONObject> ownList(@RequestHeader("Authorization") String token,
                                               @RequestBody AccountCheckDTO accountCheckDTO) {
@@ -106,4 +109,24 @@ public class AccountController {
 
     }
 
+    @PostMapping("/account/transaction-list")
+    public ResponseEntity<JSONObject> ownList(@RequestHeader("Authorization") String token,
+                                              @RequestBody TransactionCheckDTO transactionCheckDTO) {
+        if(!jwtUtil.isTokenValid(token)) {
+            JSONObject errorResponse = new JSONObject();
+            errorResponse.put("error", "토큰이 유효하지 않습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
+
+        try {
+            JSONObject transactionList = accountService.getTransactionList(transactionCheckDTO, token);
+            return ResponseEntity.status(HttpStatus.OK).body(transactionList);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            JSONObject errorResponse = new JSONObject();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+
+    }
 }
