@@ -36,13 +36,14 @@ public class JwtUtil {
                 .compact();
     }
 
-    public boolean validateToken(String token) {
+    // Bearer를 제외한 actualToken을 넣어야함.
+    public boolean validateToken(String actualToken) {
         try {
             // This line will throw an exception if it is not a signed JWS (as expected)
             Jwts.parserBuilder()
                     .setSigningKey(getSigningKey()) // Set the same key as the one used while creating the token
                     .build()
-                    .parseClaimsJws(token);
+                    .parseClaimsJws(actualToken);
             return true;
         } catch (io.jsonwebtoken.JwtException | IllegalArgumentException e) {
             // If any exception occurs while validating, consider the token to be invalid
