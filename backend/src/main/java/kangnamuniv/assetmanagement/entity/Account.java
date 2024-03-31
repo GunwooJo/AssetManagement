@@ -1,10 +1,13 @@
 package kangnamuniv.assetmanagement.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Entity
+@Getter @Setter
 public class Account {
 
     @Id
@@ -21,8 +24,8 @@ public class Account {
 
     private String organization;
 
-    @Column(name = "account_type")
-    private String accountType;
+    @Column(name = "business_type")
+    private String businessType;
 
     @Column(precision=16, scale=2)
     private BigDecimal balance;

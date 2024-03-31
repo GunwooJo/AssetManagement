@@ -41,7 +41,7 @@ public class AccountController {
 
         for (AccountRequestDTO accountRequestDTO : accountRequestDTOS) {
 
-            ResponseEntity<String> response = processAccountRegistration(actualToken, accountRequestDTO);
+            ResponseEntity<String> response = processAccountRegistration(token, accountRequestDTO);
             if (!response.getStatusCode().is2xxSuccessful()) {
                 return response;
             }
@@ -52,9 +52,11 @@ public class AccountController {
     }
 
 
-    private ResponseEntity<String> processAccountRegistration(String actualToken, AccountRequestDTO accountRequestDTO) {
+    private ResponseEntity<String> processAccountRegistration(String token, AccountRequestDTO accountRequestDTO) {
         try {
-            accountService.addAccount(accountRequestDTO.getBusinessType(), accountRequestDTO.getLoginType(), accountRequestDTO.getOrganization(), accountRequestDTO.getId(), accountRequestDTO.getPassword(), accountRequestDTO.getBirthday(), accountRequestDTO.getClientType(), actualToken);
+            accountService.addAccount(accountRequestDTO.getBusinessType(), accountRequestDTO.getLoginType(), accountRequestDTO.getOrganization(), accountRequestDTO.getId(), accountRequestDTO.getPassword(), accountRequestDTO.getBirthday(), accountRequestDTO.getClientType(), token);
+
+            accountService.saveAccountToDB(accountRequestDTO, token);
 
             return ResponseEntity.status(HttpStatus.CREATED).body("계정 등록이 완료되었습니다.");
 
