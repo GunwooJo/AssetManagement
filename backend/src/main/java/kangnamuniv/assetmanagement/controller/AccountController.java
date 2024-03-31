@@ -1,7 +1,9 @@
 package kangnamuniv.assetmanagement.controller;
 
+import jakarta.validation.Valid;
 import kangnamuniv.assetmanagement.dto.AccountCheckDTO;
 import kangnamuniv.assetmanagement.dto.AccountRequestDTO;
+import kangnamuniv.assetmanagement.dto.StockAccountListDTO;
 import kangnamuniv.assetmanagement.dto.TransactionCheckDTO;
 import kangnamuniv.assetmanagement.service.AccountService;
 import kangnamuniv.assetmanagement.service.MemberService;
@@ -27,7 +29,7 @@ public class AccountController {
 
     //계정(기관) 등록
     @PostMapping("/account/register")
-    public ResponseEntity<String> register(@RequestHeader(value = "Authorization") String token, @RequestBody List<AccountRequestDTO> accountRequestDTOS) {
+    public ResponseEntity<String> register(@RequestHeader(value = "Authorization") String token, @Valid @RequestBody List<AccountRequestDTO> accountRequestDTOS) {
 
         // Assuming the token is a Bearer token, we remove the "Bearer " part.
         String actualToken = token.substring(7);
@@ -87,10 +89,10 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.OK).body(foundAccounts);
     }
 
-    // 보유계좌 조회
+    // 은행 보유계좌 조회
     @PostMapping("/account/own/list")
     public ResponseEntity<JSONObject> ownList(@RequestHeader("Authorization") String token,
-                                              @RequestBody AccountCheckDTO accountCheckDTO) {
+                                              @Valid @RequestBody AccountCheckDTO accountCheckDTO) {
         if(!jwtUtil.isTokenValid(token)) {
             JSONObject errorResponse = new JSONObject();
             errorResponse.put("error", "토큰이 유효하지 않습니다.");
@@ -109,9 +111,10 @@ public class AccountController {
 
     }
 
+    //은행 입출금내역 조회
     @PostMapping("/account/transaction-list")
     public ResponseEntity<JSONObject> ownList(@RequestHeader("Authorization") String token,
-                                              @RequestBody TransactionCheckDTO transactionCheckDTO) {
+                                              @Valid @RequestBody TransactionCheckDTO transactionCheckDTO) {
         if(!jwtUtil.isTokenValid(token)) {
             JSONObject errorResponse = new JSONObject();
             errorResponse.put("error", "토큰이 유효하지 않습니다.");
@@ -121,6 +124,28 @@ public class AccountController {
         try {
             JSONObject transactionList = accountService.getTransactionList(transactionCheckDTO, token);
             return ResponseEntity.status(HttpStatus.OK).body(transactionList);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            JSONObject errorResponse = new JSONObject();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+
+    }
+
+    //증권사 전계좌 조회
+    @PostMapping("/stock/account/list")
+    public ResponseEntity<JSONObject> stockAccountList(@RequestHeader("Authorization") String token,
+                                                       @Valid @RequestBody StockAccountListDTO stockAccountListDTO) {
+        if(!jwtUtil.isTokenValid(token)) {
+            JSONObject errorResponse = new JSONObject();
+            errorResponse.put("error", "토큰이 유효하지 않습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
+
+        try {
+            JSONObject accountList = accountService.getStockAccountList(stockAccountListDTO, token);
+            return ResponseEntity.status(HttpStatus.OK).body(accountList);
         } catch (Exception e) {
             log.error(e.getMessage());
             JSONObject errorResponse = new JSONObject();

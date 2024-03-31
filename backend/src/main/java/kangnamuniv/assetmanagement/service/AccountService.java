@@ -1,5 +1,6 @@
 package kangnamuniv.assetmanagement.service;
 
+import kangnamuniv.assetmanagement.dto.StockAccountListDTO;
 import kangnamuniv.assetmanagement.dto.TransactionCheckDTO;
 import kangnamuniv.assetmanagement.util.ApiRequest;
 import kangnamuniv.assetmanagement.util.CommonConstant;
@@ -184,6 +185,20 @@ public class AccountService {
         if (transactionCheckDTO.getInquiryType() != null) {
             bodyMap.put("inquiryType", transactionCheckDTO.getInquiryType());
         }
+
+        return ApiRequest.request2(urlPath, bodyMap);
+    }
+
+    //증권사 계좌조회
+    public JSONObject getStockAccountList(StockAccountListDTO stockAccountListDTO, String token) throws IOException, ParseException, InterruptedException {
+        String urlPath = "https://development.codef.io/v1/kr/stock/a/account/account-list";
+        HashMap<String, Object> bodyMap = new HashMap<String, Object>();
+
+        String loginIdFromToken = jwtUtil.getLoginIdFromToken(token);
+        String foundConnectedId = memberService.getConnectedIdByLoginId(loginIdFromToken);
+
+        bodyMap.put("connectedId", foundConnectedId);
+        bodyMap.put("organization", stockAccountListDTO.getOrganization());
 
         return ApiRequest.request2(urlPath, bodyMap);
     }
