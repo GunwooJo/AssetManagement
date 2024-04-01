@@ -8,6 +8,8 @@ import java.math.BigDecimal;
 
 @Entity
 @Getter @Setter
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "business_type")
 public class Account {
 
     @Id
@@ -19,14 +21,12 @@ public class Account {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(name = "account_number")
+    @Column(name = "account_number", length = 30)
     private String accountNumber;
 
+    @Column(length = 10)
     private String organization;
 
-    @Column(name = "business_type")
-    private String businessType;
-
-    @Column(precision=16, scale=2)
-    private BigDecimal balance;
+    @Enumerated(EnumType.STRING)
+    private AccountCurrency accountCurrency; //통화코드 KRW: 한국원화, JPY: 일본 엔, USD: 미국 달러, EUR: 유로
 }
