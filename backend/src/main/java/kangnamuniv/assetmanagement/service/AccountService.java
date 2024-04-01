@@ -47,7 +47,6 @@ public class AccountService {
     public void addAccount(String businessType, String loginType, String organization, String id, String password, String birthday, String clientType, String token) throws Exception{
 
         String loginIdFromToken = jwtUtil.getLoginIdFromToken(token);
-        System.out.println("loginIdFromToken = " + loginIdFromToken);
         String urlPath = "https://development.codef.io/v1/account/create";
 
         HashMap<String, Object> bodyMap = new HashMap<String, Object>();
@@ -81,9 +80,6 @@ public class AccountService {
             bodyMap.put("connectedId", foundConnectedId);
         }
 
-        String connectedId = null;
-        JSONParser parser = new JSONParser();
-
         try {
             // CODEF API 호출
             JSONObject jsonResponse = ApiRequest.request2(urlPath, bodyMap);
@@ -92,16 +88,16 @@ public class AccountService {
             JSONObject data = (JSONObject)jsonResponse.get("data");
 
             if(Objects.equals(resCode, "CF-00000") && jsonResponse.containsKey("data")) {
-
-                connectedId = data.get("connectedId").toString();
+                String connectedId = data.get("connectedId").toString();
                 //유저가 connectedId를 갖고있지 않다면 발급된 connectedId 저장
-                if(!memberService.isConnectedIdExist(loginIdFromToken)) {
+                if (!memberService.isConnectedIdExist(loginIdFromToken)) {
                     memberService.saveConnectedId(loginIdFromToken, connectedId);
                 }
-
             } else {
-                String resErrorList = data.get("errorList").toString();
-                throw new Exception(resErrorList);
+                JSONArray jsonErrorList = (JSONArray) data.get("errorList");
+                JSONObject jsonErrorObj = (JSONObject) jsonErrorList.get(0);
+                String errorMsg = jsonErrorObj.get("message").toString();
+                throw new Exception(errorMsg);
             }
 
         } catch (Exception e) {
@@ -118,8 +114,6 @@ public class AccountService {
         HashMap<String, Object> bodyMap = new HashMap<String, Object>();
 
         bodyMap.put("connectedId", connectedId);
-
-        JSONParser parser = new JSONParser();
 
         try {
             return ApiRequest.request2(urlPath, bodyMap);

@@ -29,49 +29,51 @@ public class AccountController {
 
     //계정(기관) 등록
     @PostMapping("/account/register")
-    public ResponseEntity<String> register(@RequestHeader(value = "Authorization") String token, @Valid @RequestBody List<AccountRequestDTO> accountRequestDTOS) {
-
-        // Assuming the token is a Bearer token, we remove the "Bearer " part.
-        String actualToken = token.substring(7);
+    public ResponseEntity<JSONObject> register(@RequestHeader(value = "Authorization") String token, @Valid @RequestBody List<AccountRequestDTO> accountRequestDTOS) {
 
         // Validate the token first
-        if (!jwtUtil.validateToken(actualToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("토큰이 유효하지 않습니다.");
+        if(!jwtUtil.isTokenValid(token)) {
+            JSONObject errorResponse = new JSONObject();
+            errorResponse.put("error", "토큰이 유효하지 않습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
 
         for (AccountRequestDTO accountRequestDTO : accountRequestDTOS) {
 
-            ResponseEntity<String> response = processAccountRegistration(token, accountRequestDTO);
+            ResponseEntity<JSONObject> response = processAccountRegistration(token, accountRequestDTO);
             if (!response.getStatusCode().is2xxSuccessful()) {
                 return response;
             }
         }
 
+        JSONObject successRes = new JSONObject();
+        successRes.put("message", "모든 계정 등록이 완료되었습니다.");
         // If all registrations were successful, return a generic success message.
-        return ResponseEntity.status(HttpStatus.CREATED).body("모든 계정 등록이 완료되었습니다.");
+        return ResponseEntity.status(HttpStatus.CREATED).body(successRes);
     }
 
 
-    private ResponseEntity<String> processAccountRegistration(String token, AccountRequestDTO accountRequestDTO) {
+    private ResponseEntity<JSONObject> processAccountRegistration(String token, AccountRequestDTO accountRequestDTO) {
         try {
             accountService.addAccount(accountRequestDTO.getBusinessType(), accountRequestDTO.getLoginType(), accountRequestDTO.getOrganization(), accountRequestDTO.getId(), accountRequestDTO.getPassword(), accountRequestDTO.getBirthday(), accountRequestDTO.getClientType(), token);
 
             accountService.saveAccountToDB(accountRequestDTO, token);
 
-            return ResponseEntity.status(HttpStatus.CREATED).body("계정 등록이 완료되었습니다.");
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("message", "계정 등록이 완료되었습니다.");
+            return ResponseEntity.status(HttpStatus.CREATED).body(jsonObject);
 
         } catch (Exception e) {
             log.error("계정 등록 중 에러 발생: ", e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            JSONObject errorRes = new JSONObject();
+            errorRes.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorRes);
         }
     }
 
     // connectedId로 등록된 기관(계정) 조회하기
     @GetMapping("/account/list")
     public ResponseEntity<JSONObject> list(@RequestHeader("Authorization") String token) {
-
-        // Assuming the token is a Bearer token, we remove the "Bearer " part.
-        String actualToken = token.substring(7);
 
         // Validate the token first
         if(!jwtUtil.isTokenValid(token)) {
