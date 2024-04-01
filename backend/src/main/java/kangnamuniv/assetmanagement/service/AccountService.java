@@ -235,9 +235,12 @@ public class AccountService {
                     String resAccountCurrency = deposit.get("resAccountCurrency").toString();
                     BigDecimal resAccountBalance = null;
 
-                    //계좌의 화폐가 원화일 경우
-                    if(Objects.equals(resAccountCurrency, "KRW")) {
+                    if(Objects.equals(resAccountCurrency, "KRW")) {//계좌의 화폐가 원화일 경우
                         resAccountBalance = new BigDecimal(deposit.get("resAccountBalance").toString());
+                    } else if(Objects.equals(resAccountCurrency, "USD")) {//계좌의 화폐가 달러일 경우(테스트 필요)
+                        BigDecimal dollar = new BigDecimal(deposit.get("resAccountBalance").toString());
+                        BigDecimal wonDollar = new BigDecimal(CommonConstant.wonDollar);
+                        resAccountBalance = dollar.multiply(wonDollar);
                     }
 
                     accountRepository.saveAccount(foundMember, resAccountNumber, accountRequestDTO.getOrganization(), accountRequestDTO.getBusinessType(), resAccountBalance);
@@ -252,6 +255,10 @@ public class AccountService {
                 //계좌의 화폐가 원화일 경우
                 if(Objects.equals(resAccountCurrency, "KRW")) {
                     resAccountBalance = new BigDecimal(deposit.get("resAccountBalance").toString());
+                } else if(Objects.equals(resAccountCurrency, "USD")) {//계좌의 화폐가 달러일 경우(테스트 필요)
+                    BigDecimal dollar = new BigDecimal(deposit.get("resAccountBalance").toString());
+                    BigDecimal wonDollar = new BigDecimal(CommonConstant.wonDollar);
+                    resAccountBalance = dollar.multiply(wonDollar);
                 }
 
                 accountRepository.saveAccount(foundMember, resAccountNumber, accountRequestDTO.getOrganization(), accountRequestDTO.getBusinessType(), resAccountBalance);
