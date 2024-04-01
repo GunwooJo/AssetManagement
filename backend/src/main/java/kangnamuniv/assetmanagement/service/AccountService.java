@@ -223,7 +223,7 @@ public class AccountService {
                         resAccountBalance = dollar.multiply(wonDollar);
                     }
 
-                    accountRepository.saveAccount(foundMember, resAccountNumber, accountRequestDTO.getOrganization(), accountRequestDTO.getBusinessType(), resAccountBalance);
+//                    accountRepository.saveAccount(foundMember, resAccountNumber, accountRequestDTO.getOrganization(), accountRequestDTO.getBusinessType(), resAccountBalance);
                 }
             } else if(resData.get("resDepositTrust") instanceof JSONObject) {//resDepositTrust가 단일객체일 경우.(테스트 필요)
                 System.out.println("단일 계좌 저장");
@@ -241,7 +241,7 @@ public class AccountService {
                     resAccountBalance = dollar.multiply(wonDollar);
                 }
 
-                accountRepository.saveAccount(foundMember, resAccountNumber, accountRequestDTO.getOrganization(), accountRequestDTO.getBusinessType(), resAccountBalance);
+//                accountRepository.saveAccount(foundMember, resAccountNumber, accountRequestDTO.getOrganization(), accountRequestDTO.getBusinessType(), resAccountBalance);
             }
 
         } else if(Objects.equals(accountRequestDTO.getBusinessType(), "ST")) {// 증권사 계좌일 경우
