@@ -40,18 +40,20 @@ public class MemberController {
     }
 
     @PostMapping("/member/login")
-    public ResponseEntity<?> login(@Valid @RequestBody MemberLoginDTO memberLoginDTO) {
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody MemberLoginDTO memberLoginDTO) {
 
         Member member = MemberLoginDTO.toMember(memberLoginDTO);
         boolean isPasswordValid = memberService.passwordValidation(member);
+        TokenResponse tokenResponse = new TokenResponse();
 
         if(isPasswordValid) {
             String token = jwtUtil.generateToken(memberLoginDTO.getLogin_id());
-            TokenResponse tokenResponse = new TokenResponse(token);
+            tokenResponse.setToken(token);
             return ResponseEntity.ok(tokenResponse);
         }
         else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("아이디나 비밀번호를 다시 확인해주세요.");
+            tokenResponse.setError("아이디나 비밀번호를 다시 확인해주세요.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(tokenResponse);
         }
 
     }
