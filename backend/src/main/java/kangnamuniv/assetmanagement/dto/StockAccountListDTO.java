@@ -2,8 +2,9 @@ package kangnamuniv.assetmanagement.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import lombok.Setter;
 
-@Getter
+@Getter @Setter
 public class StockAccountListDTO {
 
     @NotBlank
