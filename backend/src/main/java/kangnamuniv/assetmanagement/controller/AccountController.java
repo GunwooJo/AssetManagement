@@ -68,27 +68,31 @@ public class AccountController {
 
     // connectedId로 등록된 기관(계정) 조회하기
     @GetMapping("/account/list")
-    public ResponseEntity<Object> list(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<JSONObject> list(@RequestHeader("Authorization") String token) {
 
         // Assuming the token is a Bearer token, we remove the "Bearer " part.
         String actualToken = token.substring(7);
 
         // Validate the token first
-        if (!jwtUtil.validateToken(actualToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("토큰이 유효하지 않습니다.");
+        if(!jwtUtil.isTokenValid(token)) {
+            JSONObject errorResponse = new JSONObject();
+            errorResponse.put("error", "토큰이 유효하지 않습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
 
-        String loginIdFromToken = jwtUtil.getLoginIdFromToken(actualToken);
+        String loginIdFromToken = jwtUtil.getLoginIdFromToken(token);
         String foundConnectedId = memberService.getConnectedIdByLoginId(loginIdFromToken);
 
-        JSONArray foundAccounts = null;
         try {
-            foundAccounts = accountService.findAccountsByConnectedId(foundConnectedId);
+            JSONObject foundAccounts = accountService.findAccountsByConnectedId(foundConnectedId);
+            return ResponseEntity.status(HttpStatus.OK).body(foundAccounts);
         } catch (Exception e) {
             log.error(e.getMessage());
+            JSONObject errorResponse = new JSONObject();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(foundAccounts);
     }
 
     // 은행 보유계좌 조회
