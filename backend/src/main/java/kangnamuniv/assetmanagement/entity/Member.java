@@ -20,7 +20,7 @@ public class Member {
 
     private String name;
 
-    private int age;
+    private String birthday;   //yymmdd 형식
 
     private String connected_id;
 

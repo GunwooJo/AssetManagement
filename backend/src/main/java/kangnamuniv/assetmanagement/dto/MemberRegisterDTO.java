@@ -19,15 +19,15 @@ public class MemberRegisterDTO {
     @NotNull(message = "name cannot be null")
     private String name;
 
-    @NotNull(message = "age cannot be null")
-    private Integer age;
+    @NotNull(message = "birthday cannot be null")
+    private String birthday;
 
     public static Member toMember(MemberRegisterDTO memberRegisterDTO) {
         Member member = new Member();
         member.setLogin_id(memberRegisterDTO.login_id);
         member.setPassword(memberRegisterDTO.getPassword());
         member.setName(memberRegisterDTO.getName());
-        member.setAge(memberRegisterDTO.getAge());
+        member.setBirthday(memberRegisterDTO.getBirthday());
         return member;
     }
 }

@@ -8,27 +8,34 @@ import kangnamuniv.assetmanagement.entity.Member;
 import kangnamuniv.assetmanagement.service.MemberService;
 import kangnamuniv.assetmanagement.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
     private final JwtUtil jwtUtil;
 
     @PostMapping("/member/register")
-    public ResponseEntity<String> register(@Valid @RequestBody MemberRegisterDTO memberRegisterDTO) {
+    public ResponseEntity<JSONObject> register(@Valid @RequestBody MemberRegisterDTO memberRegisterDTO) {
 
         Member member = MemberRegisterDTO.toMember(memberRegisterDTO);
         try {
             memberService.registerMember(member);
-            return ResponseEntity.status(HttpStatus.CREATED).body("회원가입에 성공했어요!");
+            JSONObject successRes = new JSONObject();
+            successRes.put("message", "회원가입에 성공했어요!");
+            return ResponseEntity.status(HttpStatus.CREATED).body(successRes);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 존재하는 아이디에요. 다른 아이디를 입력해주세요!");
+            log.error(e.getMessage());
+            JSONObject errorRes = new JSONObject();
+            errorRes.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorRes);
         }
     }
 
