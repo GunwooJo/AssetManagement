@@ -8,9 +8,6 @@ import java.math.BigDecimal;
 @Entity
 public class StockAccount extends Account{
 
-    @Column(name = "product_type_cd", length = 10, nullable = false)
-    private String productTypeCd;
-
     @Column(name = "deposit_received", precision=16, scale=2, nullable = false)
     private BigDecimal depositReceived;
 }
