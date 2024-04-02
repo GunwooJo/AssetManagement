@@ -29,7 +29,4 @@ public abstract class Account {
     @Column(name = "business_type", length = 20, nullable = false)
     private String businessType;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private AccountCurrency accountCurrency; //통화코드 KRW: 한국원화, JPY: 일본 엔, USD: 미국 달러, EUR: 유로
 }
