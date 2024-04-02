@@ -4,6 +4,7 @@ import kangnamuniv.assetmanagement.dto.AccountRequestDTO;
 import kangnamuniv.assetmanagement.dto.StockAccountListDTO;
 import kangnamuniv.assetmanagement.dto.TransactionCheckDTO;
 import kangnamuniv.assetmanagement.entity.Account;
+import kangnamuniv.assetmanagement.entity.AccountCurrency;
 import kangnamuniv.assetmanagement.entity.Member;
 import kangnamuniv.assetmanagement.repository.AccountRepository;
 import kangnamuniv.assetmanagement.repository.MemberRepository;
@@ -100,6 +101,8 @@ public class AccountService {
                 throw new Exception(errorMsg);
             }
 
+            saveAccountToDB(businessType, loginType, organization, id, password, birthday, clientType, token);
+
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new Exception(e.getMessage());
@@ -179,7 +182,7 @@ public class AccountService {
         return ApiRequest.request2(urlPath, bodyMap);
     }
 
-    //증권사 계좌조회
+    //증권사 계좌조회(전계좌)
     public JSONObject getStockAccountList(StockAccountListDTO stockAccountListDTO, String token) throws IOException, ParseException, InterruptedException {
         String urlPath = "https://development.codef.io/v1/kr/stock/a/account/account-list";
         HashMap<String, Object> bodyMap = new HashMap<String, Object>();
@@ -194,19 +197,18 @@ public class AccountService {
     }
 
     //DB에 계좌정보 저장
-    public void saveAccountToDB(AccountRequestDTO accountRequestDTO, String token) throws IOException, ParseException, InterruptedException {
+    public void saveAccountToDB(String businessType, String loginType, String organization, String id, String password, String birthday, String clientType, String token) throws IOException, ParseException, InterruptedException {
 
         String loginIdFromToken = jwtUtil.getLoginIdFromToken(token);
         Member foundMember = memberRepository.findByLoginId(loginIdFromToken).get(0);
 
         //은행 계좌일 경우
-        if(Objects.equals(accountRequestDTO.getBusinessType(), "BK")) {
-            JSONObject response = findOwnAccountList(accountRequestDTO.getOrganization(), accountRequestDTO.getBirthday(), token);
+        if(Objects.equals(businessType, "BK")) {
+            JSONObject response = findOwnAccountList(organization, birthday, token);
             JSONObject resData = (JSONObject) response.get("data");
 
             //resDepositTrust가 리스트일 경우.
             if(resData.get("resDepositTrust") instanceof JSONArray) {
-                System.out.println("다건 저장");
                 JSONArray resDepositTrustList = (JSONArray) resData.get("resDepositTrust");
 
                 for (Object depositTrust : resDepositTrustList) {
@@ -223,7 +225,7 @@ public class AccountService {
                         resAccountBalance = dollar.multiply(wonDollar);
                     }
 
-//                    accountRepository.saveAccount(foundMember, resAccountNumber, accountRequestDTO.getOrganization(), accountRequestDTO.getBusinessType(), resAccountBalance);
+                    accountRepository.saveBankAccount(foundMember, resAccountNumber, organization, businessType, AccountCurrency.valueOf(resAccountCurrency), resAccountBalance);
                 }
             } else if(resData.get("resDepositTrust") instanceof JSONObject) {//resDepositTrust가 단일객체일 경우.(테스트 필요)
                 System.out.println("단일 계좌 저장");
@@ -241,13 +243,13 @@ public class AccountService {
                     resAccountBalance = dollar.multiply(wonDollar);
                 }
 
-//                accountRepository.saveAccount(foundMember, resAccountNumber, accountRequestDTO.getOrganization(), accountRequestDTO.getBusinessType(), resAccountBalance);
+                accountRepository.saveBankAccount(foundMember, resAccountNumber, organization, businessType, AccountCurrency.valueOf(resAccountCurrency) , resAccountBalance);
             }
 
-        } else if(Objects.equals(accountRequestDTO.getBusinessType(), "ST")) {// 증권사 계좌일 경우
+        } /*else if(Objects.equals(businessType, "ST")) {// 증권사 계좌일 경우
 
             StockAccountListDTO stockAccountListDTO = new StockAccountListDTO();
-            stockAccountListDTO.setOrganization(accountRequestDTO.getOrganization());
+            stockAccountListDTO.setOrganization(organization);
 
             JSONObject response = getStockAccountList(stockAccountListDTO, token);
 
@@ -260,7 +262,7 @@ public class AccountService {
 
                 }
             }
-        }
+        }*/
 
         //증권사 계좌일 경우
 //        if(Objects.equals(accountRequestDTO.getBusinessType(), "ST"))

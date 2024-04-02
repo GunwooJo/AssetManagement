@@ -27,7 +27,7 @@ public class AccountController {
     private final MemberService memberService;
     private final JwtUtil jwtUtil;
 
-    //계정(기관) 등록
+    //계정(기관) 등록, db에 계좌 저장
     @PostMapping("/account/register")
     public ResponseEntity<JSONObject> register(@RequestHeader(value = "Authorization") String token, @Valid @RequestBody List<AccountRequestDTO> accountRequestDTOS) {
 
@@ -56,8 +56,6 @@ public class AccountController {
     private ResponseEntity<JSONObject> processAccountRegistration(String token, AccountRequestDTO accountRequestDTO) {
         try {
             accountService.addAccount(accountRequestDTO.getBusinessType(), accountRequestDTO.getLoginType(), accountRequestDTO.getOrganization(), accountRequestDTO.getId(), accountRequestDTO.getPassword(), accountRequestDTO.getBirthday(), accountRequestDTO.getClientType(), token);
-
-            accountService.saveAccountToDB(accountRequestDTO, token);
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("message", "계정 등록이 완료되었습니다.");

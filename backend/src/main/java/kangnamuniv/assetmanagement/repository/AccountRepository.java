@@ -2,6 +2,8 @@ package kangnamuniv.assetmanagement.repository;
 
 import jakarta.persistence.EntityManager;
 import kangnamuniv.assetmanagement.entity.Account;
+import kangnamuniv.assetmanagement.entity.AccountCurrency;
+import kangnamuniv.assetmanagement.entity.BankAccount;
 import kangnamuniv.assetmanagement.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -16,13 +18,16 @@ public class AccountRepository {
 
     private final EntityManager em;
 
-    public void saveAccount(Member member, String accountNumber, String organization, String businessType, BigDecimal balance) {
-        Account account = new Account();
-        account.setMember(member);
-        account.setAccountNumber(accountNumber);
-        account.setOrganization(organization);
-        account.setBusinessType(businessType);
-        account.setBalance(balance);
-        em.persist(account);
+    public void saveBankAccount(Member member, String accountNumber, String organization, String businessType, AccountCurrency accountCurrency, BigDecimal balance) {
+
+        BankAccount bankAccount = new BankAccount();
+        bankAccount.setAccountNumber(accountNumber);
+        bankAccount.setOrganization(organization);
+        bankAccount.setBusinessType(businessType);
+        bankAccount.setAccountCurrency(accountCurrency);
+        bankAccount.setBalance(balance);
+        bankAccount.setMember(member);
+
+        em.persist(bankAccount);
     }
 }

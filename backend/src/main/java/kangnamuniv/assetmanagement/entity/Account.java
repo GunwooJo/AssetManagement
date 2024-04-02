@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 @Entity
 @Getter @Setter
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "business_type")
 public abstract class Account {
 
     @Id
@@ -26,6 +25,9 @@ public abstract class Account {
 
     @Column(length = 10, nullable = false)
     private String organization;
+
+    @Column(name = "business_type", length = 20, nullable = false)
+    private String businessType;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
