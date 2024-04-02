@@ -50,4 +50,14 @@ public class MemberService {
     public void saveConnectedId(String login_id, String connected_id) {
         memberRepository.saveConnectedId(login_id, connected_id);
     }
+
+    public String getConnectedIdByLoginId(String login_id) {
+        Member foundMember = memberRepository.findByLoginId(login_id).get(0);
+        return foundMember.getConnected_id();
+    }
+
+    public boolean isConnectedIdExist(String login_id) {
+        String foundConnectedId = getConnectedIdByLoginId(login_id);
+        return foundConnectedId != null;
+    }
 }

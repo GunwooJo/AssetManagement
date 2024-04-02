@@ -16,6 +16,9 @@ public class AccountRequestDTO {
     private String organization;    // 기관코드
 
     @NotBlank
+    private String clientType;  //고객구분 개인: P(은행, 저축은행, 카드), 통합: A(증권, 보험)
+
+    @NotBlank
     private String birthday;    //yymmdd
 
     @NotBlank
@@ -24,5 +27,8 @@ public class AccountRequestDTO {
     @NotBlank
     private String password;
 
-    private String connected_id;
+    private String withdrawAccountNo;   //	대구은행 [아이디 로그인] 추가정보
+
+    private String withdrawAccountPassword;    //	대구은행 [아이디 로그인] 추가정보, RSA암호화된 비밀번호
+
 }

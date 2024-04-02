@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter @Setter
 public class Member {
@@ -18,8 +20,11 @@ public class Member {
 
     private String name;
 
-    private int age;
+    private String birthday;   //yymmdd 형식
 
     private String connected_id;
+
+    @OneToMany(mappedBy = "member")
+    private List<Account> accounts;
 
 }
