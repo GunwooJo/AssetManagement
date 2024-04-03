@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import Section from '../components/Section';
 
 const data1 = {
@@ -20,8 +20,8 @@ export default function Home() {
   return (
     <View>
       <ScrollView>
-        <Section data={data1}/>
-        <Section data={data2}/>
+      <Section data={data1}/>
+      <Section data={data2}/>
       </ScrollView>
     </View>
   );
