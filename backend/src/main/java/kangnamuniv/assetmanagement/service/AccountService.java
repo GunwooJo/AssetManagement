@@ -196,6 +196,21 @@ public class AccountService {
         return ApiRequest.request2(urlPath, bodyMap);
     }
 
+    //증권사 계좌조회(종합자산)
+    public JSONObject getTotalStockAccountList(String organization, String accountNumber, String token) throws IOException, ParseException, InterruptedException {
+        String urlPath = "https://development.codef.io/v1/kr/stock/a/account/financial-assets";
+        HashMap<String, Object> bodyMap = new HashMap<String, Object>();
+
+        String loginIdFromToken = jwtUtil.getLoginIdFromToken(token);
+        String foundConnectedId = memberService.getConnectedIdByLoginId(loginIdFromToken);
+
+        bodyMap.put("connectedId", foundConnectedId);
+        bodyMap.put("organization", organization);
+        bodyMap.put("account", accountNumber);
+
+        return ApiRequest.request2(urlPath, bodyMap);
+    }
+
     //DB에 계좌정보 저장
     public void saveAccountToDB(String businessType, String loginType, String organization, String id, String password, String birthday, String clientType, String token) throws IOException, ParseException, InterruptedException {
 
@@ -246,26 +261,48 @@ public class AccountService {
                 accountRepository.saveBankAccount(foundMember, resAccountNumber, organization, businessType, AccountCurrency.valueOf(resAccountCurrency) , resAccountBalance);
             }
 
-        } /*else if(Objects.equals(businessType, "ST")) {// 증권사 계좌일 경우
+        } else if(Objects.equals(businessType, "ST")) {// 증권사 계좌일 경우
 
             StockAccountListDTO stockAccountListDTO = new StockAccountListDTO();
             stockAccountListDTO.setOrganization(organization);
 
             JSONObject response = getStockAccountList(stockAccountListDTO, token);
+            List<String> accountNumbers = new ArrayList<>();    //보유 계좌의 계좌번호들
 
             //리스트로 반환됐을 경우
             if(response.get("data") instanceof JSONArray) {
                 JSONArray accountList = (JSONArray) response.get("data");
+
                 for (Object account : accountList) {
                     JSONObject jsonAccount = (JSONObject) account;
                     String resAccountNum = jsonAccount.get("resAccount").toString();
-
+                    accountNumbers.add(resAccountNum);
                 }
-            }
-        }*/
 
-        //증권사 계좌일 경우
-//        if(Objects.equals(accountRequestDTO.getBusinessType(), "ST"))
+                for (String accountNumber : accountNumbers) {
+                    //증권사 종합자산 조회
+                    JSONObject totalStockAccountList = getTotalStockAccountList(organization, accountNumber, token);
+
+                    JSONObject resData = (JSONObject) totalStockAccountList.get("data");
+                    String resDepositReceived = resData.get("resDepositReceived").toString();
+                    BigDecimal depositReceived = new BigDecimal(resDepositReceived);
+
+                    accountRepository.saveStockAccount(foundMember, accountNumber, organization, businessType, depositReceived);
+                }
+
+            } else if(response.get("data") instanceof JSONObject) {//단일객체로 반환됐을 경우
+                JSONObject jsonAccount = (JSONObject) response.get("data");
+                String resAccountNum = jsonAccount.get("resAccount").toString();
+
+                JSONObject totalStockAccountList = getTotalStockAccountList(organization, resAccountNum, token);
+                JSONObject resData = (JSONObject) totalStockAccountList.get("data");
+                String resDepositReceived = resData.get("resDepositReceived").toString();
+                BigDecimal depositReceived = new BigDecimal(resDepositReceived);
+
+                accountRepository.saveStockAccount(foundMember, resAccountNum, organization, businessType, depositReceived);
+            }
+
+        }
 
 
     }
