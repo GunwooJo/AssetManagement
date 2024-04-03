@@ -13,7 +13,7 @@ public class AccountBalanceSnapshot {
     @Column(name = "balance_snapshot_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
