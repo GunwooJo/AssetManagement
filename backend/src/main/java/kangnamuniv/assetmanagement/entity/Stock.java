@@ -1,10 +1,15 @@
 package kangnamuniv.assetmanagement.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Entity
+@Getter @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Stock {
 
     @Id
