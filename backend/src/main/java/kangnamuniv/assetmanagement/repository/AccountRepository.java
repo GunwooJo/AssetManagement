@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Repository
 @Transactional
@@ -38,5 +39,12 @@ public class AccountRepository {
         stockAccount.setDepositReceived(depositReceived);
 
         em.persist(stockAccount);
+    }
+
+    public List<StockAccount> findStockAccountListByLoginId(String login_id) {
+
+        return em.createQuery("select sc from StockAccount sc where sc.member.login_id = :login_id", StockAccount.class)
+                .setParameter("login_id", login_id)
+                .getResultList();
     }
 }
