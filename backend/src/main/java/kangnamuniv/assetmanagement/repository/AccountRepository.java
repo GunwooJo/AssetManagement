@@ -47,4 +47,21 @@ public class AccountRepository {
                 .setParameter("login_id", login_id)
                 .getResultList();
     }
+
+    //보유 주식을 stock 테이블에 저장
+    public Stock saveStock(StockAccount stockAccount, String itemName, String valutaionPl, String valuationAmt, Long quantity, String purchaseAmount, String earningsRate, AccountCurrency accountCurrency) {
+        Stock stock = Stock.builder()
+                .itemName(itemName)
+                .valuationPl(new BigDecimal(valutaionPl))
+                .valuationAmt(new BigDecimal(valuationAmt))
+                .quantity(quantity)
+                .purchaseAmount(new BigDecimal(purchaseAmount))
+                .earningsRate(new BigDecimal(earningsRate))
+                .accountCurrency(accountCurrency)
+                .build();
+
+        stock.setStockAccount(stockAccount);
+        em.persist(stock);
+        return stock;
+    }
 }
