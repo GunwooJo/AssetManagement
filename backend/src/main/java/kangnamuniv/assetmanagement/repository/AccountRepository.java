@@ -48,20 +48,13 @@ public class AccountRepository {
                 .getResultList();
     }
 
-    //보유 주식을 stock 테이블에 저장
-    public Stock saveStock(StockAccount stockAccount, String itemName, String valutaionPl, String valuationAmt, Long quantity, String purchaseAmount, String earningsRate, AccountCurrency accountCurrency) {
-        Stock stock = Stock.builder()
-                .itemName(itemName)
-                .valuationPl(new BigDecimal(valutaionPl))
-                .valuationAmt(new BigDecimal(valuationAmt))
-                .quantity(quantity)
-                .purchaseAmount(new BigDecimal(purchaseAmount))
-                .earningsRate(new BigDecimal(earningsRate))
-                .accountCurrency(accountCurrency)
-                .build();
+    // 증권사 계좌 업데이트(예수금)
+    public void updateStockAccountByAccountNumber(String depositReceived, String accountNumber) {
 
-        stock.setStockAccount(stockAccount);
-        em.persist(stock);
-        return stock;
+        StockAccount foundStockAccount = em.createQuery("select sc from StockAccount sc where sc.accountNumber = :accountNumber", StockAccount.class)
+                .setParameter("accountNumber", accountNumber)
+                .getSingleResult();
+
+        foundStockAccount.setDepositReceived(new BigDecimal(depositReceived));
     }
 }

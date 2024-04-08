@@ -308,34 +308,5 @@ public class AccountService {
 
     }
 
-    //stock 테이블의 주식 정보 업데이트
-    public void updateStock(String token) throws IOException, ParseException, InterruptedException {
-        String loginIdFromToken = jwtUtil.getLoginIdFromToken(token);
-        Member foundMember = memberRepository.findByLoginId(loginIdFromToken).get(0);
 
-        List<StockAccount> stockAccountList = accountRepository.findStockAccountListByLoginId(loginIdFromToken);
-
-        //주식계좌가 1개인 경우
-        if(stockAccountList.size() == 1) {
-            StockAccount stockAccount = stockAccountList.get(0);
-            JSONObject resTotalStockAccount = getTotalStockAccountList(stockAccount.getOrganization(), stockAccount.getAccountNumber(), token);
-            JSONObject resData = (JSONObject) resTotalStockAccount.get("data");
-            JSONArray resItemList = (JSONArray) resData.get("resItemList");
-
-            for (Object itemObj : resItemList) {
-                JSONObject item = (JSONObject) itemObj;
-                String resItemName = item.get("resItemName").toString();
-                String resValuationPL = item.get("resValuationPL").toString();
-                String resValuationAmt = item.get("resValuationAmt").toString();
-                String resQuantity = item.get("resQuantity").toString();
-                String resPurchaseAmount = item.get("resPurchaseAmount").toString();
-                String resEarningsRate = item.get("resEarningsRate").toString();
-                String resAccountCurrency = item.get("resAccountCurrency").toString();
-
-                accountRepository.saveStock(stockAccount, resItemName, resValuationPL, resValuationAmt, Long.valueOf(resQuantity), resPurchaseAmount, resEarningsRate, AccountCurrency.valueOf(resAccountCurrency));
-            }
-        }
-        //주식 계좌가 1개 이상인 경우 만들어야함.
-
-    }
 }
