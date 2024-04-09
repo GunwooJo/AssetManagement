@@ -8,17 +8,32 @@ import AccountBook from './src/pages/AccountBook';
 import ConversationalAI from './src/pages/ConversationalAI';
 import Login from './src/pages/Login';
 import Register from './src/pages/Register';
+import AccountList from './src/pages/AccountList';
+import ExpenseList from './src/pages/ExpenseList';
+import AccountRegister from './src/pages/AccountRegister';
 
 const Stack = createNativeStackNavigator();
+const HomeStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-var isLogin = false;
+var isLogin = true;
+
+function HomeTab() {
+  return(
+    <HomeStack.Navigator screenOptions={{ headerShown: true }}>
+      <HomeStack.Screen name="HomeTab" component={Home}/>
+      <HomeStack.Screen name="AccountList" component={AccountList}/>
+      <HomeStack.Screen name="ExpenseList" component={ExpenseList}/>
+      <HomeStack.Screen name="AccountRegister" component={AccountRegister}/>
+    </HomeStack.Navigator>
+  )
+}
 
 export default function App() {
   return (
     <NavigationContainer>
       {isLogin ?
         <Tab.Navigator>
-          <Tab.Screen name="Home" component={Home} />
+          <Tab.Screen name="Home" component={HomeTab} />
           <Tab.Screen name="My Asset" component={Asset} />
           <Tab.Screen name="Account Book" component={AccountBook} />
           <Tab.Screen name="Chat to AssetManager" component={ConversationalAI} />

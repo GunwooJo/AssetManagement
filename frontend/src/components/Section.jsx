@@ -2,39 +2,40 @@ import * as React from 'react';
 import { View } from 'react-native';
 import { Button, Card, Icon } from 'react-native-paper';
 
-function RightContent(btn) {
+function RightContent(btn, navigation, page) {
   if(btn == true) {
-    return (<Button icon="folder"/>);
+    return (<Button icon="image" onPress={() => {navigation.navigate(page)}}/>);
   }
 }
 
-const Section = ({data}) => (
+const Section = ({data, navigation}) => (
   <View style={{ padding: 5, margin: 20 }}>
     <Card>
-      {Object.values(data).map((v, k) => {
-        if (v[0] == 'head') {
+      {Object.values(data).map((v) => {
+        if (v.type == "head") {
           return (
-            <Card.Title key={k} title={v[2]} subtitle={v[3]}
+            <Card.Title key={v.id} title={v.mainText} subtitle={v.subText}
             titleVariant='headlineLarge' subtitleVariant='headlineSmall'
-            right={() => RightContent(v[1])}
+            right={() => RightContent(v.button, navigation, v.stackPage)}
             style={{ paddingTop: 10 }}/>
-          )}
-        else if (v[0] == 'body') {
+          )
+        }
+        else if (v.type == 'body') {
           return (
-            <Card.Title key={k} title={v[2]} subtitle={v[3]}
+            <Card.Title key={v.id} title={v.mainText} subtitle={v.subText}
             titleVariant='titleLarge' subtitleVariant='titleMedium'
-            left={p => <Icon {...p} source={v[4]}/>}
-            right={() => RightContent(v[1])}/>
+            left={p => <Icon {...p} source="image"/>}
+            right={() => RightContent(v.button, navigation, v.stackPage)}/>
           )
         }
         else {
           return (
-            <Card.Title key={k} title={v[2]}
+            <Card.Title key={v.id} title={v.mainText}
             titleVariant='headlineMedium'
-            right={() => RightContent(v[1])}/>
+            right={() => RightContent(v.button, navigation, v.stackPage)}/>
           )
         }
-        })}
+      })}
     </Card>
   </View>
 );
