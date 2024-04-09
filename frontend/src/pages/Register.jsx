@@ -2,6 +2,8 @@ import * as React from "react";
 import { Keyboard, ScrollView, View } from 'react-native';
 import { Button, Text, TextInput } from "react-native-paper";
 import Load from "../components/Load";
+import axios from 'axios';
+import {BaseUrl} from "../utils/ApiUtil";
 
 export default function Register() {
   const [name, setName] = React.useState('');
@@ -9,7 +11,7 @@ export default function Register() {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   //const [isKeyboardVisible, setKeyboardVisible] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(false);
 /*
   React.useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -26,6 +28,20 @@ export default function Register() {
 
   <View style={[{ margin: 20 }, isKeyboardVisible ? { flex: 0.75 } : { flex: 0.9 }]}>
 */
+  const aa = async() => {
+    try {
+      const res = await axios.post(BaseUrl + '/member/register', {
+        login_id: email,
+        password: password,
+        name: name,
+        birthday: age
+      });
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <View style={{ margin: 20 }}>
       {isLoading ?
@@ -61,7 +77,7 @@ export default function Register() {
       returnKeyType="done" style={{ marginBottom: 10 }}/>
       </ScrollView>
       
-      <Button mode="contained" onPress={() => console.log(() => {})}>
+      <Button mode="contained" onPress={aa}>
       <Text variant="displayMedium" style={{ color: '#ffffff', fontWeight: 'bold' }}>회원가입</Text></Button>
       </View>
       }
