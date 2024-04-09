@@ -13,13 +13,13 @@ public class AccountBalanceSnapshot {
     @Column(name = "balance_snapshot_id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "account_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
-    @Column(precision=16, scale=2)
+    @Column(precision=16, scale=2, nullable = false)
     private BigDecimal balance;
 
-    @Column(name = "snapshot_date")
+    @Column(name = "snapshot_date", nullable = false)
     private LocalDate snapshotDate;
 }
