@@ -75,7 +75,6 @@ public class StockRepository {
             stock.setPurchaseAmount(new BigDecimal(purchaseAmount));
             stock.setEarningsRate(new BigDecimal(earningsRate));
             stock.setAccountCurrency(accountCurrency);
-            em.merge(stock);
         } else {    //주식이 없으면 생성 후 저장
 
             Stock newStock = new Stock();
