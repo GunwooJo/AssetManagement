@@ -29,10 +29,7 @@ import java.math.BigDecimal;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -45,7 +42,6 @@ public class AccountService {
     private final AccountRepository accountRepository;
 
     //계정을 등록하여 connectedId 발급.
-    //토큰으로 사용자 정보를 얻고 connectedId가 저장돼있으면 계정추가요청, 저장안돼있으면 계정등록요청 날리도록 수정하자.
     public void addAccount(String businessType, String loginType, String organization, String id, String password, String birthday, String clientType, String token) throws Exception{
 
         String loginIdFromToken = jwtUtil.getLoginIdFromToken(token);
@@ -308,5 +304,48 @@ public class AccountService {
 
     }
 
+    public void updateBankAccount(String token) throws IOException, ParseException, InterruptedException {
+        /*
+        1. 보유계좌 조회(리스트일 경우, 단일 객체일 경우 나눠서 진행)
+        - BankAccount의 organization들 조회
+        - 기관마다 보유계좌조회 실시
+        2. 계좌번호로 bank_account 조회
+        3. 조회된 계좌 잔액 업데이트
+         */
+        String loginIdFromToken = jwtUtil.getLoginIdFromToken(token);
+        Member foundMember = memberRepository.findByLoginId(loginIdFromToken).get(0);
+        String birthdate = foundMember.getBirthday();
+
+        Set<String> bankOrganizationSet = accountRepository.findBankOrganizationSet(token);
+        for (String organization : bankOrganizationSet) {
+            JSONObject resAccounts = findOwnAccountList(organization, birthdate, token);
+            //조회된 보유 계좌목록으로 잔액 업데이트 진행하면 됨.
+            JSONObject resData = (JSONObject) resAccounts.get("data");
+
+            //예금/신탁 계좌가 여러개일 경우
+            if(resData.get("resDepositTrust") instanceof JSONArray) {
+                JSONArray resDepositTrustList = (JSONArray) resData.get("resDepositTrust");
+
+                for (Object depositTrust : resDepositTrustList) {
+                    JSONObject jsonDepositTrust = (JSONObject) depositTrust;
+
+                    String accountNum = jsonDepositTrust.get("resAccount").toString();
+                    String resAccountCurrency = jsonDepositTrust.get("resAccountCurrency").toString();
+                    String resAccountBalance = jsonDepositTrust.get("resAccountBalance").toString();
+
+                    accountRepository.updateBankAccountByAccountNumber(resAccountBalance, accountNum, AccountCurrency.valueOf(resAccountCurrency));
+                }
+            } else if (resData.get("resDepositTrust") instanceof JSONObject) {  //계좌가 1개일 경우
+
+                JSONObject jsonDepositTrust = (JSONObject) resData.get("resDepositTrust");
+
+                String accountNum = jsonDepositTrust.get("resAccount").toString();
+                String resAccountCurrency = jsonDepositTrust.get("resAccountCurrency").toString();
+                String resAccountBalance = jsonDepositTrust.get("resAccountBalance").toString();
+
+                accountRepository.updateBankAccountByAccountNumber(resAccountBalance, accountNum, AccountCurrency.valueOf(resAccountCurrency));
+            }
+        }
+    }
 
 }
