@@ -12,6 +12,9 @@ public class Bond {
     @Column(name = "bond_id")
     private Long id;
 
+    @Column(name = "bond_name", length = 30, nullable = false)
+    private String bondName;    //채권이름
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private StockAccount stockAccount;
