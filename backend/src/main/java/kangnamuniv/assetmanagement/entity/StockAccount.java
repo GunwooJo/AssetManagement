@@ -22,4 +22,6 @@ public class StockAccount extends Account{
     @OneToMany(mappedBy = "stockAccount", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Stock> stockList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "stockAccount", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Bond> bondList = new ArrayList<>();
 }
