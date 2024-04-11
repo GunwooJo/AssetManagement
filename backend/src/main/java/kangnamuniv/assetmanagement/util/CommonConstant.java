@@ -1,5 +1,7 @@
 package kangnamuniv.assetmanagement.util;
 
+import java.math.BigDecimal;
+
 /**
  *	상수 클래스
  */
@@ -87,6 +89,8 @@ public class CommonConstant {
     public static final String SANDBOX_CLIENT_ID 	= "ef27cfaa-10c1-4470-adac-60ba476273f9";				// CODEF 샌드박스 클라이언트 아이디
     public static final String SANDBOX_SECERET_KEY 	= "83160c33-9045-4915-86d8-809473cdf5c3";				// CODEF 샌드박스 클라이언트 시크릿
 
-    //원달러 환율
-    public static final int wonDollar = 1340;
+    public static final BigDecimal wonDollar = new BigDecimal(1364); //원달러 환율
+    public static final BigDecimal wonEuro = new BigDecimal(1.465); //원유로 환율
+    public static final BigDecimal wonJpy = new BigDecimal(8.92); //원엔 환율
+
 }
