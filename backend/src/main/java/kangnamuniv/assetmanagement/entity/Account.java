@@ -29,4 +29,6 @@ public abstract class Account {
     @Column(name = "business_type", length = 20, nullable = false)
     private String businessType;
 
+    @Column(name = "account_name", length = 20, nullable = false)
+    private String accountName;
 }
