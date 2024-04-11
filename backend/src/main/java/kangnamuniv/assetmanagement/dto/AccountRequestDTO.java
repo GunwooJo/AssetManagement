@@ -19,9 +19,6 @@ public class AccountRequestDTO {
     private String clientType;  //고객구분 개인: P(은행, 저축은행, 카드), 통합: A(증권, 보험)
 
     @NotBlank
-    private String birthday;    //yymmdd
-
-    @NotBlank
     private String id;
 
     @NotBlank
