@@ -1,12 +1,9 @@
 package kangnamuniv.assetmanagement.service;
 
-import kangnamuniv.assetmanagement.dto.AccountRequestDTO;
 import kangnamuniv.assetmanagement.dto.StockAccountListDTO;
 import kangnamuniv.assetmanagement.dto.TransactionCheckDTO;
-import kangnamuniv.assetmanagement.entity.Account;
 import kangnamuniv.assetmanagement.entity.AccountCurrency;
 import kangnamuniv.assetmanagement.entity.Member;
-import kangnamuniv.assetmanagement.entity.StockAccount;
 import kangnamuniv.assetmanagement.repository.AccountRepository;
 import kangnamuniv.assetmanagement.repository.MemberRepository;
 import kangnamuniv.assetmanagement.util.ApiRequest;
@@ -17,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +38,7 @@ public class AccountService {
     private final AccountRepository accountRepository;
 
     //계정을 등록하여 connectedId 발급.
-    public void addAccount(String businessType, String loginType, String organization, String id, String password, String birthday, String clientType, String token) throws Exception{
+    public void addAccount(String businessType, String loginType, String organization, String id, String password, String clientType, String token) throws Exception{
 
         String loginIdFromToken = jwtUtil.getLoginIdFromToken(token);
         String urlPath = "https://development.codef.io/v1/account/create";
@@ -57,7 +53,6 @@ public class AccountService {
         accountMap.put("organization",	organization);
         accountMap.put("loginType",  	loginType);
         accountMap.put("id", id);
-        accountMap.put("birthday", birthday);
 
         /**	password RSA encrypt */
         try {
@@ -98,7 +93,7 @@ public class AccountService {
                 throw new Exception(errorMsg);
             }
 
-            saveAccountToDB(businessType, loginType, organization, id, password, birthday, clientType, token);
+            saveAccountToDB(businessType, loginType, organization, id, password, clientType, token);
 
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -125,16 +120,17 @@ public class AccountService {
     }
 
     //은행 보유계좌 조회
-    public JSONObject findOwnAccountList(String organization, String birthDate, String token) throws IOException, ParseException, InterruptedException {
+    public JSONObject findOwnAccountList(String organization, String token) throws IOException, ParseException, InterruptedException {
         String urlPath = "https://development.codef.io/v1/kr/bank/p/account/account-list";
         HashMap<String, Object> bodyMap = new HashMap<String, Object>();
 
         String loginIdFromToken = jwtUtil.getLoginIdFromToken(token);
         String foundConnectedId = memberService.getConnectedIdByLoginId(loginIdFromToken);
+        Member foundMember = memberRepository.findByLoginId(loginIdFromToken).get(0);
 
         bodyMap.put("connectedId", foundConnectedId);
         bodyMap.put("organization", organization);
-        bodyMap.put("birthDate", birthDate);
+        bodyMap.put("birthDate", foundMember.getBirthday());
 
         return ApiRequest.request2(urlPath, bodyMap);
     }
@@ -209,14 +205,14 @@ public class AccountService {
     }
 
     //DB에 계좌정보 저장
-    public void saveAccountToDB(String businessType, String loginType, String organization, String id, String password, String birthday, String clientType, String token) throws IOException, ParseException, InterruptedException {
+    public void saveAccountToDB(String businessType, String loginType, String organization, String id, String password, String clientType, String token) throws IOException, ParseException, InterruptedException {
 
         String loginIdFromToken = jwtUtil.getLoginIdFromToken(token);
         Member foundMember = memberRepository.findByLoginId(loginIdFromToken).get(0);
 
         //은행 계좌일 경우
         if(Objects.equals(businessType, "BK")) {
-            JSONObject response = findOwnAccountList(organization, birthday, token);
+            JSONObject response = findOwnAccountList(organization, token);
             JSONObject resData = (JSONObject) response.get("data");
 
             //resDepositTrust가 리스트일 경우.
@@ -227,35 +223,66 @@ public class AccountService {
                     JSONObject deposit = (JSONObject) depositTrust;
                     String resAccountNumber = deposit.get("resAccount").toString();
                     String resAccountCurrency = deposit.get("resAccountCurrency").toString();
+                    String resAccountName = deposit.get("resAccountName").toString();
                     BigDecimal resAccountBalance = null;
 
                     if(Objects.equals(resAccountCurrency, "KRW")) {//계좌의 화폐가 원화일 경우
                         resAccountBalance = new BigDecimal(deposit.get("resAccountBalance").toString());
+
                     } else if(Objects.equals(resAccountCurrency, "USD")) {//계좌의 화폐가 달러일 경우(테스트 필요)
                         BigDecimal dollar = new BigDecimal(deposit.get("resAccountBalance").toString());
-                        BigDecimal wonDollar = new BigDecimal(CommonConstant.wonDollar);
+                        BigDecimal wonDollar = CommonConstant.wonDollar;
                         resAccountBalance = dollar.multiply(wonDollar);
+
+                    } else if(Objects.equals(resAccountCurrency, "JPY")) {
+                        BigDecimal jpy = new BigDecimal(deposit.get("resAccountBalance").toString());
+                        resAccountBalance = jpy.multiply(CommonConstant.wonJpy);
+
+                    } else if(Objects.equals(resAccountCurrency, "EUR")) {
+                        BigDecimal euro = new BigDecimal(deposit.get("resAccountBalance").toString());
+                        resAccountBalance = euro.multiply(CommonConstant.wonEuro);
                     }
 
-                    accountRepository.saveBankAccount(foundMember, resAccountNumber, organization, businessType, AccountCurrency.valueOf(resAccountCurrency), resAccountBalance);
+                    try {
+                        accountRepository.saveBankAccount(foundMember, resAccountNumber, organization, businessType, resAccountBalance, resAccountName);
+
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+
                 }
+
             } else if(resData.get("resDepositTrust") instanceof JSONObject) {//resDepositTrust가 단일객체일 경우.(테스트 필요)
                 System.out.println("단일 계좌 저장");
                 JSONObject deposit = (JSONObject) resData.get("resDepositTrust");
                 String resAccountNumber = deposit.get("resAccount").toString();
                 String resAccountCurrency = deposit.get("resAccountCurrency").toString();
+                String resAccountName = deposit.get("resAccountName").toString();
+
                 BigDecimal resAccountBalance = null;
 
-                //계좌의 화폐가 원화일 경우
-                if(Objects.equals(resAccountCurrency, "KRW")) {
+                if(Objects.equals(resAccountCurrency, "KRW")) {//계좌의 화폐가 원화일 경우
                     resAccountBalance = new BigDecimal(deposit.get("resAccountBalance").toString());
+
                 } else if(Objects.equals(resAccountCurrency, "USD")) {//계좌의 화폐가 달러일 경우(테스트 필요)
                     BigDecimal dollar = new BigDecimal(deposit.get("resAccountBalance").toString());
-                    BigDecimal wonDollar = new BigDecimal(CommonConstant.wonDollar);
+                    BigDecimal wonDollar = CommonConstant.wonDollar;
                     resAccountBalance = dollar.multiply(wonDollar);
+
+                } else if(Objects.equals(resAccountCurrency, "JPY")) {
+                    BigDecimal jpy = new BigDecimal(deposit.get("resAccountBalance").toString());
+                    resAccountBalance = jpy.multiply(CommonConstant.wonJpy);
+
+                } else if(Objects.equals(resAccountCurrency, "EUR")) {
+                    BigDecimal euro = new BigDecimal(deposit.get("resAccountBalance").toString());
+                    resAccountBalance = euro.multiply(CommonConstant.wonEuro);
                 }
 
-                accountRepository.saveBankAccount(foundMember, resAccountNumber, organization, businessType, AccountCurrency.valueOf(resAccountCurrency) , resAccountBalance);
+                try {
+                    accountRepository.saveBankAccount(foundMember, resAccountNumber, organization, businessType , resAccountBalance, resAccountName);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
 
         } else if(Objects.equals(businessType, "ST")) {// 증권사 계좌일 경우
@@ -265,6 +292,7 @@ public class AccountService {
 
             JSONObject response = getStockAccountList(stockAccountListDTO, token);
             List<String> accountNumbers = new ArrayList<>();    //보유 계좌의 계좌번호들
+            Map<String, String> accountInfo = new HashMap<>();  //key: 계좌번호, value: 계좌이름
 
             //리스트로 반환됐을 경우
             if(response.get("data") instanceof JSONArray) {
@@ -274,6 +302,7 @@ public class AccountService {
                     JSONObject jsonAccount = (JSONObject) account;
                     String resAccountNum = jsonAccount.get("resAccount").toString();
                     accountNumbers.add(resAccountNum);
+                    accountInfo.put(resAccountNum, ((JSONObject) account).get("resAccountName").toString());
                 }
 
                 for (String accountNumber : accountNumbers) {
@@ -283,20 +312,23 @@ public class AccountService {
                     JSONObject resData = (JSONObject) totalStockAccountList.get("data");
                     String resDepositReceived = resData.get("resDepositReceived").toString();
                     BigDecimal depositReceived = new BigDecimal(resDepositReceived);
+                    String accountName = accountInfo.get(accountNumber);
 
-                    accountRepository.saveStockAccount(foundMember, accountNumber, organization, businessType, depositReceived);
+                    accountRepository.saveStockAccount(foundMember, accountNumber, organization, businessType, depositReceived, accountName);
+
                 }
 
             } else if(response.get("data") instanceof JSONObject) {//단일객체로 반환됐을 경우
                 JSONObject jsonAccount = (JSONObject) response.get("data");
                 String resAccountNum = jsonAccount.get("resAccount").toString();
-
+                accountInfo.put(resAccountNum, jsonAccount.get("resAccountName").toString());
                 JSONObject totalStockAccountList = getTotalStockAccountList(organization, resAccountNum, token);
                 JSONObject resData = (JSONObject) totalStockAccountList.get("data");
                 String resDepositReceived = resData.get("resDepositReceived").toString();
                 BigDecimal depositReceived = new BigDecimal(resDepositReceived);
 
-                accountRepository.saveStockAccount(foundMember, resAccountNum, organization, businessType, depositReceived);
+                String accountName = accountInfo.get(resAccountNum);
+                accountRepository.saveStockAccount(foundMember, resAccountNum, organization, businessType, depositReceived, accountName);
             }
 
         }
@@ -304,21 +336,28 @@ public class AccountService {
 
     }
 
+//    public void saveLoan() {
+//        JSONArray resLoan = (JSONArray) resData.get("resLoan");
+//
+//        if(!resLoan.isEmpty()) {
+//            for (Object loanObj : resLoan) {
+//                JSONObject resLoanObj = (JSONObject) loanObj;
+//                String resLoanCurrency = resLoanObj.get("resAccountCurrency").toString();
+//                String resLoanBalance = resLoanObj.get("resAccountBalance").toString();
+//                String resAccountNum = resLoanObj.get("resAccount").toString();
+//                accountRepository.updateLoan(resAccountNum, resLoanBalance, AccountCurrency.valueOf(resLoanCurrency));
+//            }
+//        }
+//    }
+
     public void updateBankAccount(String token) throws IOException, ParseException, InterruptedException {
-        /*
-        1. 보유계좌 조회(리스트일 경우, 단일 객체일 경우 나눠서 진행)
-        - BankAccount의 organization들 조회
-        - 기관마다 보유계좌조회 실시
-        2. 계좌번호로 bank_account 조회
-        3. 조회된 계좌 잔액 업데이트
-         */
+
         String loginIdFromToken = jwtUtil.getLoginIdFromToken(token);
         Member foundMember = memberRepository.findByLoginId(loginIdFromToken).get(0);
-        String birthdate = foundMember.getBirthday();
 
         Set<String> bankOrganizationSet = accountRepository.findBankOrganizationSet(token);
         for (String organization : bankOrganizationSet) {
-            JSONObject resAccounts = findOwnAccountList(organization, birthdate, token);
+            JSONObject resAccounts = findOwnAccountList(organization, token);
             //조회된 보유 계좌목록으로 잔액 업데이트 진행하면 됨.
             JSONObject resData = (JSONObject) resAccounts.get("data");
 
