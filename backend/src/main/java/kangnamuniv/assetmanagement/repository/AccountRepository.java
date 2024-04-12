@@ -89,7 +89,7 @@ public class AccountRepository {
     // db에 저장된 은행 계좌의 organization들 찾기.
     public Set<String> findBankOrganizationSet(String token) {
         String loginIdFromToken = jwtUtil.getLoginIdFromToken(token);
-        Member foundMember = memberRepository.findByLoginId(loginIdFromToken).get(0);
+        Member foundMember = memberRepository.findByLoginId(loginIdFromToken);
         List<Account> foundAccounts = foundMember.getAccounts();
 
         Set<String> organizations = new HashSet<>();

@@ -126,7 +126,7 @@ public class AccountService {
 
         String loginIdFromToken = jwtUtil.getLoginIdFromToken(token);
         String foundConnectedId = memberService.getConnectedIdByLoginId(loginIdFromToken);
-        Member foundMember = memberRepository.findByLoginId(loginIdFromToken).get(0);
+        Member foundMember = memberRepository.findByLoginId(loginIdFromToken);
 
         bodyMap.put("connectedId", foundConnectedId);
         bodyMap.put("organization", organization);
@@ -208,7 +208,7 @@ public class AccountService {
     public void saveAccountToDB(String businessType, String loginType, String organization, String id, String password, String clientType, String token) throws IOException, ParseException, InterruptedException {
 
         String loginIdFromToken = jwtUtil.getLoginIdFromToken(token);
-        Member foundMember = memberRepository.findByLoginId(loginIdFromToken).get(0);
+        Member foundMember = memberRepository.findByLoginId(loginIdFromToken);
 
         //은행 계좌일 경우
         if(Objects.equals(businessType, "BK")) {
@@ -353,7 +353,7 @@ public class AccountService {
     public void updateBankAccount(String token) throws IOException, ParseException, InterruptedException {
 
         String loginIdFromToken = jwtUtil.getLoginIdFromToken(token);
-        Member foundMember = memberRepository.findByLoginId(loginIdFromToken).get(0);
+        Member foundMember = memberRepository.findByLoginId(loginIdFromToken);
 
         Set<String> bankOrganizationSet = accountRepository.findBankOrganizationSet(token);
         for (String organization : bankOrganizationSet) {

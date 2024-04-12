@@ -21,10 +21,10 @@ public class MemberRepository {
         return member.getId();
     }
 
-    public List<Member> findByLoginId(String login_id) {
+    public Member findByLoginId(String login_id) {
         return em.createQuery("select m from Member m where m.login_id = :login_id", Member.class)
                 .setParameter("login_id", login_id)
-                .getResultList();
+                .getSingleResult();
     }
 
     public void saveConnectedId(String login_id, String connected_id) {
