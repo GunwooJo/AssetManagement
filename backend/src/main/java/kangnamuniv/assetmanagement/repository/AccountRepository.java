@@ -125,4 +125,10 @@ public class AccountRepository {
                 .setParameter("accountNumber", accountNumber)
                 .getSingleResult();
     }
+
+    public StockAccount findStockAccountByAccountNum(String accountNumber) {
+        return em.createQuery("select sa from StockAccount sa where sa.accountNumber = :accountNumber", StockAccount.class)
+                .setParameter("accountNumber", accountNumber)
+                .getSingleResult();
+    }
 }
