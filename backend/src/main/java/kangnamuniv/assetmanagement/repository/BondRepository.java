@@ -32,7 +32,7 @@ public class BondRepository {
             amount = new BigDecimal(valuationAmt);
         } catch (NumberFormatException e) {
             log.error("평가금액 형식 잘못됨: {}", valuationAmt, e);
-            throw new IllegalArgumentException("평가금액 형식 잘못됨: ", e);
+            throw new IllegalArgumentException("평가금액에 숫자가 전달되지 않음.");
         }
 
         Bond newBond = Bond.builder()
