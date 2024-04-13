@@ -143,12 +143,12 @@ public class AccountRepository {
             return account;
 
         } catch (NoResultException e) {
-            log.error("해당 계좌번호의 계좌 없음: {}", accountNumber);
-            throw e;
+            log.error("해당 계좌번호의 계좌 없음: {}", accountNumber, e);
+            throw new NoResultException("해당 계좌번호의 계좌 없음." );
 
         } catch (Exception e) {
             log.error("계좌 찾는 중 에러 발생: ", e);
-            throw new RuntimeException(e);
+            throw new RuntimeException("계좌 찾는 중 에러 발생.");
         }
     }
 }

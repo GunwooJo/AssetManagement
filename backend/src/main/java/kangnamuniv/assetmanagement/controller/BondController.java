@@ -43,7 +43,7 @@ public class BondController {
         } catch (Exception e) {
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDTO(null, null, "서버에러: " + e));
+                    .body(new ResponseDTO(null, null, e.getMessage()));
         }
     }
 }
