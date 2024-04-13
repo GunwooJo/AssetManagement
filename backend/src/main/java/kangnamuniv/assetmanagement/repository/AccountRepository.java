@@ -1,11 +1,13 @@
 package kangnamuniv.assetmanagement.repository;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import kangnamuniv.assetmanagement.entity.*;
 import kangnamuniv.assetmanagement.util.CommonConstant;
 import kangnamuniv.assetmanagement.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -127,8 +129,26 @@ public class AccountRepository {
     }
 
     public StockAccount findStockAccountByAccountNum(String accountNumber) {
-        return em.createQuery("select sa from StockAccount sa where sa.accountNumber = :accountNumber", StockAccount.class)
-                .setParameter("accountNumber", accountNumber)
-                .getSingleResult();
+
+        if (StringUtils.isBlank(accountNumber)) {
+            log.error("Invalid account number provided: {}", accountNumber);
+            throw new IllegalArgumentException("잘못된 계좌번호");
+        }
+
+        try {
+            StockAccount account = em.createQuery("select sa from StockAccount sa where sa.accountNumber = :accountNumber", StockAccount.class)
+                    .setParameter("accountNumber", accountNumber)
+                    .getSingleResult();
+            log.debug("발견한 계좌: {}", account);
+            return account;
+
+        } catch (NoResultException e) {
+            log.error("해당 계좌번호의 계좌 없음: {}", accountNumber);
+            throw e;
+
+        } catch (Exception e) {
+            log.error("계좌 찾는 중 에러 발생: ", e);
+            throw new RuntimeException(e);
+        }
     }
 }
