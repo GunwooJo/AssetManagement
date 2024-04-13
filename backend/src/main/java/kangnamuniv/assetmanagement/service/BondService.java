@@ -31,4 +31,17 @@ public class BondService {
         return bondRepository.createAndSaveBond(bondName, foundStockAccount, valuationAmt, AccountCurrency.valueOf(accountCurrency));
 
     }
+
+    public Bond updateBond(Long id, String bondName, String accountNumber, String valuationAmt, String accountCurrency) {
+
+        if(id == null || StringUtils.isBlank(bondName) || StringUtils.isBlank(accountNumber) || StringUtils.isBlank(valuationAmt) || StringUtils.isBlank(accountCurrency)) {
+
+            log.error("입력 파라미터가 잘못됨.");
+            throw new IllegalArgumentException("입력 파라미터가 잘못됨.");
+        }
+
+        StockAccount foundStockAccount = accountRepository.findStockAccountByAccountNum(accountNumber);
+
+        return bondRepository.updateBond(id, bondName, foundStockAccount, valuationAmt, AccountCurrency.valueOf(accountCurrency));
+    }
 }

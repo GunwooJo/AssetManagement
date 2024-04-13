@@ -1,6 +1,7 @@
 package kangnamuniv.assetmanagement.repository;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import kangnamuniv.assetmanagement.entity.AccountCurrency;
 import kangnamuniv.assetmanagement.entity.Bond;
 import kangnamuniv.assetmanagement.entity.StockAccount;
@@ -55,19 +56,44 @@ public class BondRepository {
         return newBond;
     }
 
-    public Bond findBondByNameAndAccountNum(String bondName, String accountNumber) {
+    public Bond findBondById(Long id) {
 
-        if(StringUtils.isBlank(bondName) || StringUtils.isBlank(accountNumber)) {
+        if(id == null) {
+            throw new IllegalArgumentException("입력 파라미터 오류.");
+        }
+
+        try {
+            Bond foundBond = em.find(Bond.class, id);
+            log.debug("조회된 채권: {}", foundBond);
+            return foundBond;
+
+        } catch (Exception e) {
+            log.error("채권 조회 중 에러 발생: ", e);
+            throw new RuntimeException("채권 조회 중 에러 발생.");
+        }
+    }
+
+    public Bond updateBond(Long bondId, String bondName, StockAccount stockAccount, String valuationAmt, AccountCurrency accountCurrency) {
+
+        if(StringUtils.isBlank(bondName) || stockAccount == null || StringUtils.isBlank(valuationAmt) || accountCurrency == null) {
+            log.error("입력 파라미터가 잘못됨.");
             throw new IllegalArgumentException("입력 파라미터가 잘못됨.");
         }
 
-        StockAccount resStockAccount = accountRepository.findStockAccountByAccountNum(accountNumber);
-        List<Bond> bondList = resStockAccount.getBondList();
+        BigDecimal amount;
+        try {
+            amount = new BigDecimal(valuationAmt);
+        } catch (NumberFormatException e) {
+            log.error("평가금액 형식 잘못됨: {}", valuationAmt, e);
+            throw new IllegalArgumentException("평가금액에 숫자가 전달되지 않음.");
+        }
 
-        return bondList.stream()
-                .filter(bond -> Objects.equals(bond.getBondName(), bondName))
-                .findFirst()
-                .orElse(null);
+        Bond foundBond = findBondById(bondId);
+        foundBond.setBondName(bondName);
+        foundBond.setStockAccount(stockAccount);
+        foundBond.setValuationAmt(amount);
+        foundBond.setAccountCurrency(accountCurrency);
 
+        return foundBond;
     }
 }
