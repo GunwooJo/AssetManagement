@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Objects;
 
 @Repository
 @Transactional
@@ -19,6 +21,7 @@ import java.math.BigDecimal;
 public class BondRepository {
 
     private final EntityManager em;
+    private final AccountRepository accountRepository;
 
     public Bond createAndSaveBond(String bondName, StockAccount stockAccount, String valuationAmt, AccountCurrency accountCurrency) {
 
@@ -50,5 +53,21 @@ public class BondRepository {
         }
 
         return newBond;
+    }
+
+    public Bond findBondByNameAndAccountNum(String bondName, String accountNumber) {
+
+        if(StringUtils.isBlank(bondName) || StringUtils.isBlank(accountNumber)) {
+            throw new IllegalArgumentException("입력 파라미터가 잘못됨.");
+        }
+
+        StockAccount resStockAccount = accountRepository.findStockAccountByAccountNum(accountNumber);
+        List<Bond> bondList = resStockAccount.getBondList();
+
+        return bondList.stream()
+                .filter(bond -> Objects.equals(bond.getBondName(), bondName))
+                .findFirst()
+                .orElse(null);
+
     }
 }
