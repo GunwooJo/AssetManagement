@@ -13,7 +13,7 @@ import java.util.List;
 public class ResponseDTO {
 
     private String message;
-    private List<Object> data;
+    private Object data;
     private String error;
 
 }

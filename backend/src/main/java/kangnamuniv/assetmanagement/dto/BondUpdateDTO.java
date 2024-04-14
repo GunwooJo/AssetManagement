@@ -9,7 +9,7 @@ import lombok.Getter;
 public class BondUpdateDTO {
 
     @NotNull(message = "id값 누락.")
-    @Min(value = 1, message = "id는 1보다 큰 정수이어야 합니다.")
+    @Min(value = 1, message = "id는 1 이상의 정수이어야 합니다.")
     private Long id;
 
     @NotBlank
