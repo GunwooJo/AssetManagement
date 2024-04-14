@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -43,5 +45,9 @@ public class BondService {
         StockAccount foundStockAccount = accountRepository.findStockAccountByAccountNum(accountNumber);
 
         return bondRepository.updateBond(id, bondName, foundStockAccount, valuationAmt, AccountCurrency.valueOf(accountCurrency));
+    }
+
+    public List<Bond> findBondListByLoginId(String login_id) {
+        return bondRepository.findBondListByLoginId(login_id);
     }
 }

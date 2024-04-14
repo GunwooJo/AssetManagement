@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,6 +26,6 @@ public class Member {
     private String connected_id;
 
     @OneToMany(mappedBy = "member")
-    private List<Account> accounts;
+    private List<Account> accounts = new ArrayList<>();
 
 }

@@ -1,10 +1,7 @@
 package kangnamuniv.assetmanagement.repository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
-import kangnamuniv.assetmanagement.entity.AccountCurrency;
-import kangnamuniv.assetmanagement.entity.Bond;
-import kangnamuniv.assetmanagement.entity.StockAccount;
+import kangnamuniv.assetmanagement.entity.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -12,8 +9,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Repository
 @Transactional
@@ -22,7 +19,7 @@ import java.util.Objects;
 public class BondRepository {
 
     private final EntityManager em;
-    private final AccountRepository accountRepository;
+    private final MemberRepository memberRepository;
 
     public Bond createAndSaveBond(String bondName, StockAccount stockAccount, String valuationAmt, AccountCurrency accountCurrency) {
 
@@ -95,5 +92,29 @@ public class BondRepository {
         foundBond.setAccountCurrency(accountCurrency);
 
         return foundBond;
+    }
+
+    public List<Bond> findBondListByLoginId(String login_id) {
+
+        List<Bond> totalBondList = new ArrayList<>();
+
+        Member foundMember = memberRepository.findByLoginId(login_id);
+        if(foundMember == null) {
+            log.info("해당 로그인 아이디를 가진 회원이 없습니다.");
+            return totalBondList;
+        }
+
+        List<Account> foundAccounts = foundMember.getAccounts();
+        for (Account foundAccount : foundAccounts) {
+
+            if(foundAccount instanceof StockAccount) {
+                List<Bond> foundBondList = ((StockAccount) foundAccount).getBondList();
+
+                totalBondList.addAll(foundBondList);
+
+            }
+        }
+        return totalBondList;
+
     }
 }
