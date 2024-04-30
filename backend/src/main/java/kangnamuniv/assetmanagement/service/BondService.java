@@ -1,5 +1,6 @@
 package kangnamuniv.assetmanagement.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import kangnamuniv.assetmanagement.entity.AccountCurrency;
 import kangnamuniv.assetmanagement.entity.Bond;
 import kangnamuniv.assetmanagement.entity.StockAccount;
@@ -49,5 +50,9 @@ public class BondService {
 
     public List<Bond> findBondListByLoginId(String login_id) {
         return bondRepository.findBondListByLoginId(login_id);
+    }
+
+    public void deleteBondById(Long id) {
+        bondRepository.deleteBondById(id);
     }
 }

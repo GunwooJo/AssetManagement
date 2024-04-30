@@ -1,6 +1,7 @@
 package kangnamuniv.assetmanagement.repository;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import kangnamuniv.assetmanagement.entity.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -116,5 +117,24 @@ public class BondRepository {
         }
         return totalBondList;
 
+    }
+
+    public void deleteBondById(Long id) {
+
+        if(id == null) {
+            throw new IllegalArgumentException("채권의 id값은 null이 될 수 없음.");
+        }
+
+        Bond foundBond = em.find(Bond.class, id);
+        System.out.println("foundBond = " + foundBond);
+        log.debug("조회된 채권: {}", foundBond);
+
+        if (foundBond == null) {
+            log.info("해당 아이디를 가진 채권 없음.");
+            throw new RuntimeException("해당 아이디를 가진 채권 없음.");
+        }
+
+        em.remove(foundBond);
+        log.debug("삭제된 채권: {}", foundBond);
     }
 }
