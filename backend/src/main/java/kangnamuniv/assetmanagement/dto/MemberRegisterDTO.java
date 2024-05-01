@@ -1,10 +1,11 @@
 package kangnamuniv.assetmanagement.dto;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import kangnamuniv.assetmanagement.entity.Member;
 import lombok.Getter;
+
+import java.time.LocalDate;
 
 @Getter
 public class MemberRegisterDTO {
@@ -20,14 +21,14 @@ public class MemberRegisterDTO {
     private String name;
 
     @NotNull(message = "birthday cannot be null")
-    private String birthday;
+    private LocalDate birthdate;
 
     public static Member toMember(MemberRegisterDTO memberRegisterDTO) {
         Member member = new Member();
         member.setLogin_id(memberRegisterDTO.login_id);
         member.setPassword(memberRegisterDTO.getPassword());
         member.setName(memberRegisterDTO.getName());
-        member.setBirthday(memberRegisterDTO.getBirthday());
+        member.setBirthdate(memberRegisterDTO.getBirthdate());
         return member;
     }
 }

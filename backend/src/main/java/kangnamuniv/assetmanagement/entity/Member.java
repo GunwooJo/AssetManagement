@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,14 +16,19 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
+    @Column(length = 30, nullable = false)
     private String login_id;
 
+    @Column(length = 60, nullable = false)
     private String password;
 
+    @Column(length = 20, nullable = false)
     private String name;
 
-    private String birthday;   //yymmdd 형식
+    @Column(nullable = false)
+    private LocalDate birthdate;
 
+    @Column(length = 255)
     private String connected_id;
 
     @OneToMany(mappedBy = "member")

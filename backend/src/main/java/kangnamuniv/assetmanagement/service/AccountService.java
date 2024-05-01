@@ -25,6 +25,8 @@ import java.math.BigDecimal;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -130,7 +132,12 @@ public class AccountService {
 
         bodyMap.put("connectedId", foundConnectedId);
         bodyMap.put("organization", organization);
-        bodyMap.put("birthDate", foundMember.getBirthday());
+
+        LocalDate birthdate = foundMember.getBirthdate();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");  // '-' 제거
+        String formattedBirthdate = birthdate.format(formatter);
+
+        bodyMap.put("birthDate", formattedBirthdate);
 
         return ApiRequest.request2(urlPath, bodyMap);
     }
