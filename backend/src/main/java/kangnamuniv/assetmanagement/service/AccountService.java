@@ -357,6 +357,7 @@ public class AccountService {
 //        }
 //    }
 
+    //은행 계좌정보 업데이트
     public void updateBankAccount(String token) throws IOException, ParseException, InterruptedException {
 
         String loginIdFromToken = jwtUtil.getLoginIdFromToken(token);
@@ -365,7 +366,7 @@ public class AccountService {
         Set<String> bankOrganizationSet = accountRepository.findBankOrganizationSet(token);
         for (String organization : bankOrganizationSet) {
             JSONObject resAccounts = findOwnAccountList(organization, token);
-            //조회된 보유 계좌목록으로 잔액 업데이트 진행하면 됨.
+
             JSONObject resData = (JSONObject) resAccounts.get("data");
 
             //예금/신탁 계좌가 여러개일 경우
