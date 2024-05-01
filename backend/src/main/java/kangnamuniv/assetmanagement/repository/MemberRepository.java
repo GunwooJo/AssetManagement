@@ -29,7 +29,7 @@ public class MemberRepository {
                     .setParameter("login_id", login_id)
                     .getSingleResult();
         } catch (NoResultException e ) {
-            log.error("login_id를 가진 Member를 찾지 못함: " + e);
+            log.debug("login_id를 가진 Member를 찾지 못함: " + e);
             return null;
         }
 
