@@ -31,7 +31,7 @@ public class Member {
     @Column(length = 255)
     private String connected_id;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Account> accounts = new ArrayList<>();
 
 }
