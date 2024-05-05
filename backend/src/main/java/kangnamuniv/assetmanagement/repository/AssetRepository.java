@@ -19,13 +19,20 @@ public class AssetRepository {
 
     public void save(BigDecimal cash, BigDecimal stock_valuation, BigDecimal bond_valuation, BigDecimal property_valuation) {
 
-        Asset asset = Asset.builder()
-                .cash(cash)
-                .stockValuation(stock_valuation)
-                .bondValuation(bond_valuation)
-                .propertyValuation(property_valuation)
-                .build();
+        try {
+            Asset asset = Asset.builder()
+                    .cash(cash)
+                    .stockValuation(stock_valuation)
+                    .bondValuation(bond_valuation)
+                    .propertyValuation(property_valuation)
+                    .build();
 
-        em.persist(asset);
+            em.persist(asset);
+
+        } catch (Exception e) {
+            log.error("Asset 저장 실패: " , e);
+            throw new RuntimeException(e);
+        }
+
     }
 }
