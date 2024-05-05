@@ -1,20 +1,25 @@
 package kangnamuniv.assetmanagement.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
 @Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Asset {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "asset_id")
     private Long id;
+
+    @Column(precision=16, scale=2, nullable = false)
+    private BigDecimal cash;
 
     @Column(name = "stock_valuation", precision=16, scale=2, nullable = false)
     private BigDecimal stockValuation;
