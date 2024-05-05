@@ -232,6 +232,21 @@ public class AccountService {
         return ApiRequest.request2(urlPath, bodyMap);
     }
 
+    //증권사 계좌조회(종합자산)
+    public JSONObject getTotalStockAccountList(String organization, String accountNumber, Member member) throws IOException, ParseException, InterruptedException {
+        String urlPath = "https://development.codef.io/v1/kr/stock/a/account/financial-assets";
+        HashMap<String, Object> bodyMap = new HashMap<String, Object>();
+
+        String loginIdFromToken = member.getLogin_id();
+        String foundConnectedId = memberService.getConnectedIdByLoginId(loginIdFromToken);
+
+        bodyMap.put("connectedId", foundConnectedId);
+        bodyMap.put("organization", organization);
+        bodyMap.put("account", accountNumber);
+
+        return ApiRequest.request2(urlPath, bodyMap);
+    }
+
     //DB에 계좌정보 저장
     public void saveAccountToDB(String businessType, String loginType, String organization, String id, String password, String clientType, String token) throws IOException, ParseException, InterruptedException {
 

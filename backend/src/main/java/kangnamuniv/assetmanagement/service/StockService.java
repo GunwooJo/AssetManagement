@@ -79,4 +79,56 @@ public class StockService {
         }
 
     }
+
+    public void updateStockAccountAndStockInfo(Member member) throws IOException, ParseException, InterruptedException {
+        String loginIdFromToken = member.getLogin_id();
+
+        List<StockAccount> stockAccountList = accountRepository.findStockAccountListByLoginId(loginIdFromToken);
+
+        //증권사 계좌가 1개인 경우
+        if(stockAccountList.size() == 1) {
+            StockAccount stockAccount = stockAccountList.get(0);
+            JSONObject resTotalStockAccount = accountService.getTotalStockAccountList(stockAccount.getOrganization(), stockAccount.getAccountNumber(), member);
+            JSONObject resData = (JSONObject) resTotalStockAccount.get("data");
+            JSONArray resItemList = (JSONArray) resData.get("resItemList");
+            String resDepositReceived = resData.get("resDepositReceived").toString();
+            String resAccount = resData.get("resAccount").toString();
+
+            accountRepository.updateStockAccountByAccountNumber(resDepositReceived, resAccount);    //계좌 예수금 업데이트
+
+            for (Object itemObj : resItemList) {
+                JSONObject item = (JSONObject) itemObj;
+                String resItemName = item.get("resItemName").toString();
+                String resValuationPL = item.get("resValuationPL").toString();
+                String resValuationAmt = item.get("resValuationAmt").toString();
+                String resQuantity = item.get("resQuantity").toString();
+                String resPurchaseAmount = item.get("resPurchaseAmount").toString();
+                String resEarningsRate = item.get("resEarningsRate").toString();
+                String resAccountCurrency = item.get("resAccountCurrency").toString();
+
+                stockRepository.addOrUpdateStock(stockAccount, resItemName, resValuationPL, resValuationAmt, Long.valueOf(resQuantity), resPurchaseAmount, resEarningsRate, AccountCurrency.valueOf(resAccountCurrency));
+            }
+        } else if (stockAccountList.size() > 1) {   //주식 계좌가 1개 이상인 경우(테스트 필요)
+
+            for (StockAccount stockAccount : stockAccountList) {
+                JSONObject resTotalStockAccount = accountService.getTotalStockAccountList(stockAccount.getOrganization(), stockAccount.getAccountNumber(), member);
+                JSONObject resData = (JSONObject) resTotalStockAccount.get("data");
+                JSONArray resItemList = (JSONArray) resData.get("resItemList");
+
+                for (Object itemObj : resItemList) {
+                    JSONObject item = (JSONObject) itemObj;
+                    String resItemName = item.get("resItemName").toString();
+                    String resValuationPL = item.get("resValuationPL").toString();
+                    String resValuationAmt = item.get("resValuationAmt").toString();
+                    String resQuantity = item.get("resQuantity").toString();
+                    String resPurchaseAmount = item.get("resPurchaseAmount").toString();
+                    String resEarningsRate = item.get("resEarningsRate").toString();
+                    String resAccountCurrency = item.get("resAccountCurrency").toString();
+
+                    stockRepository.addOrUpdateStock(stockAccount, resItemName, resValuationPL, resValuationAmt, Long.valueOf(resQuantity), resPurchaseAmount, resEarningsRate, AccountCurrency.valueOf(resAccountCurrency));
+                }
+            }
+        }
+
+    }
 }
