@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Repository
 @Transactional
@@ -25,6 +26,7 @@ public class AssetRepository {
                     .stockValuation(stock_valuation)
                     .bondValuation(bond_valuation)
                     .propertyValuation(property_valuation)
+                    .createdAt(LocalDate.now())
                     .build();
 
             em.persist(asset);
