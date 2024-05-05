@@ -2,12 +2,14 @@ package kangnamuniv.assetmanagement.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceException;
 import kangnamuniv.assetmanagement.entity.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -46,5 +48,23 @@ public class MemberRepository {
             e.printStackTrace();
         }
 
+    }
+
+    public List<Member> findAllMember() {
+
+        List<Member> foundMembers = new ArrayList<>();
+
+        try {
+            foundMembers = em.createQuery("select m from Member m where connected_id is not null", Member.class)
+                    .getResultList();
+
+        } catch (PersistenceException e) {
+            log.error("connectedId를 가진 모든 멤버 불러오기 실패: ", e);
+
+        } catch (Exception e) {
+            log.error("connectedId를 가진 모든 멤버 불러오기 실패: " + e);
+        }
+
+        return foundMembers;
     }
 }
