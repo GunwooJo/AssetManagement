@@ -101,6 +101,18 @@ public class AccountRepository {
         return organizations;
     }
 
+    public Set<String> findBankOrganizationSet(Member member) {
+        String loginIdFromToken = member.getLogin_id();
+        Member foundMember = memberRepository.findByLoginId(loginIdFromToken);
+        List<Account> foundAccounts = foundMember.getAccounts();
+
+        Set<String> organizations = new HashSet<>();
+        for (Account foundAccount : foundAccounts) {
+            organizations.add(foundAccount.getOrganization());
+        }
+        return organizations;
+    }
+
     private BigDecimal exchangeMoney(AccountCurrency accountCurrency, BigDecimal money) {
 
         if(Objects.equals(money, new BigDecimal(0))) {
