@@ -1,9 +1,6 @@
 package kangnamuniv.assetmanagement.service;
 
-import kangnamuniv.assetmanagement.entity.Account;
-import kangnamuniv.assetmanagement.entity.BankAccount;
-import kangnamuniv.assetmanagement.entity.Member;
-import kangnamuniv.assetmanagement.entity.StockAccount;
+import kangnamuniv.assetmanagement.entity.*;
 import kangnamuniv.assetmanagement.repository.AccountRepository;
 import kangnamuniv.assetmanagement.repository.AssetRepository;
 import kangnamuniv.assetmanagement.repository.BondRepository;
@@ -25,6 +22,8 @@ public class AssetService {
     private final AccountService accountService;
     private final AssetRepository assetRepository;
     private final StockService stockService;
+    private final MemberRepository memberRepository;
+    private final BondService bondService;
 
     public void updateAllBankAccount(List<Member> members) {
 
@@ -53,5 +52,59 @@ public class AssetService {
 
     public void saveAsset(Member member, BigDecimal cash, BigDecimal stock_valuation, BigDecimal bond_valuation, BigDecimal property_valuation) {
         assetRepository.save(member, cash, stock_valuation, bond_valuation, property_valuation);
+    }
+
+    //특정 멤버의 모든 현금 조회
+    public BigDecimal getMemberCash(Member member) {
+
+        BigDecimal total = new BigDecimal(0);
+
+        List<Account> accounts = member.getAccounts();
+
+        for (Account account : accounts) {
+
+            if (account instanceof BankAccount) {
+                BigDecimal balance = ((BankAccount) account).getBalance();
+                total = total.add(balance);
+
+            } else if (account instanceof StockAccount) {
+                BigDecimal depositReceived = ((StockAccount) account).getDepositReceived();
+                total = total.add(depositReceived);
+            }
+        }
+
+        return total;
+    }
+
+    //특정 멤버의 주식 전체 평가금액 조회
+    public BigDecimal getMemberStockValuation(Member member) {
+
+        BigDecimal total = new BigDecimal(0);
+
+        List<Account> accounts = member.getAccounts();
+
+        for (Account account : accounts) {
+
+            if (account instanceof StockAccount) {
+                List<Stock> stockList = ((StockAccount) account).getStockList();
+
+                for (Stock stock : stockList) {
+                    BigDecimal valuationAmt = stock.getValuationAmt();
+                    total = total.add(valuationAmt);
+                }
+            }
+        }
+
+        return total;
+    }
+
+    //추후 부동산 평가금액 입력 필요.
+    public void saveAllMemberAsset() {
+
+        List<Member> members = memberRepository.findAllMemberHaveConnectedId();
+
+        for (Member member : members) {
+            saveAsset(member, getMemberCash(member), getMemberStockValuation(member), bondService.getBondValuationByMember(member), new BigDecimal(0));
+        }
     }
 }
