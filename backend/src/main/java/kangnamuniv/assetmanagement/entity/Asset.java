@@ -18,7 +18,11 @@ public class Asset {
     @Column(name = "asset_id")
     private Long id;
 
-    @Column(precision=16, scale=2, nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @Column(precision = 16, scale = 2, nullable = false)
     private BigDecimal cash;
 
     @Column(name = "stock_valuation", precision=16, scale=2, nullable = false)
