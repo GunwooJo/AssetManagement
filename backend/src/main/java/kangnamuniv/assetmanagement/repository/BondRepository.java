@@ -137,4 +137,25 @@ public class BondRepository {
         em.remove(foundBond);
         log.debug("삭제된 채권: {}", foundBond);
     }
+
+    public BigDecimal getBondValuationByMember(Member member) {
+
+        BigDecimal total = new BigDecimal(0);
+
+        List<Account> accounts = member.getAccounts();
+
+        for (Account account : accounts) {
+
+            if (account instanceof StockAccount) {
+                List<Bond> bondList = ((StockAccount) account).getBondList();
+
+                for (Bond bond : bondList) {
+                    BigDecimal valuationAmt = bond.getValuationAmt();
+                    total = total.add(valuationAmt);
+                }
+            }
+        }
+
+        return total;
+    }
 }

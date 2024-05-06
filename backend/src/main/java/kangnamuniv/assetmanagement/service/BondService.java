@@ -3,6 +3,7 @@ package kangnamuniv.assetmanagement.service;
 import jakarta.persistence.EntityNotFoundException;
 import kangnamuniv.assetmanagement.entity.AccountCurrency;
 import kangnamuniv.assetmanagement.entity.Bond;
+import kangnamuniv.assetmanagement.entity.Member;
 import kangnamuniv.assetmanagement.entity.StockAccount;
 import kangnamuniv.assetmanagement.repository.AccountRepository;
 import kangnamuniv.assetmanagement.repository.BondRepository;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -54,5 +56,9 @@ public class BondService {
 
     public void deleteBondById(Long id) {
         bondRepository.deleteBondById(id);
+    }
+
+    public BigDecimal getBondValuationByMember(Member member) {
+        return bondRepository.getBondValuationByMember(member);
     }
 }
