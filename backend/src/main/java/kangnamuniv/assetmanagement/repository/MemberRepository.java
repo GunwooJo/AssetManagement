@@ -50,7 +50,7 @@ public class MemberRepository {
 
     }
 
-    public List<Member> findAllMember() {
+    public List<Member> findAllMemberHaveConnectedId() {
 
         List<Member> foundMembers = new ArrayList<>();
 
