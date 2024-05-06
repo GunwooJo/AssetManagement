@@ -22,7 +22,6 @@ import java.util.List;
 @Slf4j
 public class AssetService {
 
-    private final MemberRepository memberRepository;
     private final AccountService accountService;
     private final AssetRepository assetRepository;
     private final StockService stockService;
@@ -52,7 +51,7 @@ public class AssetService {
         }
     }
 
-    public void saveAsset(BigDecimal cash, BigDecimal stock_valuation, BigDecimal bond_valuation, BigDecimal property_valuation) {
-        assetRepository.save(cash, stock_valuation, bond_valuation, property_valuation);
+    public void saveAsset(Member member, BigDecimal cash, BigDecimal stock_valuation, BigDecimal bond_valuation, BigDecimal property_valuation) {
+        assetRepository.save(member, cash, stock_valuation, bond_valuation, property_valuation);
     }
 }
