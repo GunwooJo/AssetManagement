@@ -1,39 +1,72 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { Button, Card, Icon } from 'react-native-paper';
-
+import { Button, Card, Icon, TouchableRipple } from 'react-native-paper';
+//TouchableRipple = onPress 가능
 function RightContent(btn, navigation, page) {
-  if(btn == true) {
-    return (<Button icon="image" onPress={() => {navigation.navigate(page)}}/>);
-  }
+  return (<Button icon="image" onPress={() => {navigation.navigate(page)}}/>);
 }
 
-const Section = ({data, navigation}) => (
-  <View style={{ padding: 5, margin: 20 }}>
-    <Card>
+const Section = ({data, navigation, type}) => (
+  <View style={{ margin: 20 }}>
+    <Card mode={type}
+    style={{ backgroundColor: "#FFFFFF", paddingTop: 10, paddingBottom: 10 }}>
       {Object.values(data).map((v) => {
         if (v.type == "head") {
-          return (
-            <Card.Title key={v.id} title={v.mainText} subtitle={v.subText}
-            titleVariant='headlineLarge' subtitleVariant='headlineSmall'
-            right={() => RightContent(v.button, navigation, v.stackPage)}
-            style={{ paddingTop: 10 }}/>
-          )
+          if (v.button == true) {
+            return (
+              <TouchableRipple key={v.id}
+              onPress={() => {navigation.navigate(v.stackPage)}}>
+                <Card.Title key={v.id} title={v.mainText} subtitle={v.subText}
+                titleVariant='headlineLarge' subtitleVariant='headlineSmall'
+                right={() => <Button icon="image"/>}/>
+              </TouchableRipple>
+            )
+          }
+          else {
+            return (
+              <Card.Title key={v.id} title={v.mainText} subtitle={v.subText}
+              titleVariant='headlineLarge' subtitleVariant='headlineSmall'/>
+            )
+          }
         }
         else if (v.type == 'body') {
-          return (
-            <Card.Title key={v.id} title={v.mainText} subtitle={v.subText}
-            titleVariant='titleLarge' subtitleVariant='titleMedium'
-            left={p => <Icon {...p} source="image"/>}
-            right={() => RightContent(v.button, navigation, v.stackPage)}/>
-          )
+          if (v.button == true) {
+            return (
+              <TouchableRipple key={v.id}
+              onPress={() => {navigation.navigate(v.stackPage)}}>
+                <Card.Title key={v.id} title={v.mainText} subtitle={v.subText}
+                titleVariant='titleLarge' subtitleVariant='titleMedium'
+                left={p => <Icon source={require('../assets/kb_icon.png')}/>}
+                
+                right={() => <Button icon="image"/>}/>
+              </TouchableRipple>
+            )
+          }
+          else {
+            return (
+              <Card.Title key={v.id} title={v.mainText} subtitle={v.subText}
+              titleVariant='titleLarge' subtitleVariant='titleMedium'
+              left={p => <Icon {...p} source='camera'/>}/>
+            )
+          }
         }
         else {
-          return (
-            <Card.Title key={v.id} title={v.mainText}
-            titleVariant='headlineMedium'
-            right={() => RightContent(v.button, navigation, v.stackPage)}/>
-          )
+          if (v.button == true) {
+            return (
+              <TouchableRipple key={v.id}
+              onPress={() => {navigation.navigate(v.stackPage)}}>
+                <Card.Title key={v.id} title={v.mainText}
+                titleVariant='headlineMedium'
+                right={() => <Button icon="image"/>}/>
+              </TouchableRipple>
+            )
+          }
+          else {
+            return (
+              <Card.Title key={v.id} title={v.mainText}
+              titleVariant='headlineMedium'/>
+            )
+          }
         }
       })}
     </Card>

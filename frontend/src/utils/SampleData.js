@@ -13,27 +13,27 @@ export const HomeData1 = [
         "type" : "body",
         "button" : false,
         "mainText" : "A 은행",
-        "subText" : "XXX,XXX,XXX 원"
+        "subText" : "XXX,XXX,XXX 원",
         //"stackPage" : "pagename"
-        //"image" : "img/url"
+        "image" : "src/assets/nh_icon.png"
     },
     {
         "id" : 3,
         "type" : "body",
         "button" : false,
         "mainText" : "A 은행",
-        "subText" : "XXX,XXX,XXX 원"
+        "subText" : "XXX,XXX,XXX 원",
         //"stackPage" : "pagename"
-        //"image" : "img/url"
+        "image" : "src/assets/nh_icon.png"
     },
     {
         "id" : 4,
         "type" : "body",
         "button" : false,
         "mainText" : "A 은행",
-        "subText" : "XXX,XXX,XXX 원"
+        "subText" : "XXX,XXX,XXX 원",
         //"stackPage" : "pagename"
-        //"image" : "img/url" 
+        "image" : "src/assets/nh_icon.png"
     },
     {
         "id" : 5,
@@ -192,3 +192,77 @@ export const AccountListData = [
         //"image" : "img/url"
     }
 ];
+export const AccountRegisterData = [
+    {
+        "id" : 1,
+        "type" : "body",
+        "button" : true,
+        "mainText" : "국민은행(KB)",
+        "subText" : "연동하기",
+        "stackPage" : "국민은행(KB)",
+        "image" : "src/assets/nh_icon.png"
+    },
+    {
+        "id" : 2,
+        "type" : "body",
+        "button" : true,
+        "mainText" : "농협은행(NH)",
+        "subText" : "연동하기",
+        "stackPage" : "농협은행(NH)",
+        "image" : "src/assets/nh_icon.png"
+    },
+    {
+        "id" : 3,
+        "type" : "body",
+        "button" : true,
+        "mainText" : "하나은행",
+        "subText" : "연동하기",
+        "stackPage" : "하나은행",
+        "image" : "src/assets/nh_icon.png"
+    },
+    {
+        "id" : 4,
+        "type" : "body",
+        "button" : true,
+        "mainText" : "나무(NH투자증권)",
+        "subText" : "연동하기",
+        "stackPage" : "나무(NH투자증권)",
+        "image" : "src/assets/nh_icon.png"
+    },
+    {
+        "id" : 5,
+        "type" : "body",
+        "button" : true,
+        "mainText" : "미래에셋증권",
+        "subText" : "연동하기",
+        "stackPage" : "미래에셋증권",
+        "image" : "src/assets/nh_icon.png"
+    },
+    {
+        "id" : 6,
+        "type" : "body",
+        "button" : true,
+        "mainText" : "삼성증권",
+        "subText" : "연동하기",
+        "stackPage" : "삼성증권",
+        "image" : "src/assets/nh_icon.png"
+    }
+];
+export const DAWData1 = [
+    {
+        "id" : 1,
+        "type" : "body",
+        "button" : false,
+        "mainText" : "XX 음식점",
+        "subText" : "- XXX,XXX원",
+        "image" : "src/assets/nh_icon.png"
+    },
+    {
+        "id" : 2,
+        "type" : "body",
+        "button" : false,
+        "mainText" : "XX 편의점",
+        "subText" : "- XX,XXX원",
+        "image" : "src/assets/nh_icon.png"
+    },
+]

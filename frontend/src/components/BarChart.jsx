@@ -17,6 +17,7 @@ export default function BChart({data}) {
             showLine
             disablePress
             disableScroll
+            isAnimated
             />
     </View>
   )
