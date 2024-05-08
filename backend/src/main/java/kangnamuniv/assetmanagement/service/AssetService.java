@@ -1,9 +1,7 @@
 package kangnamuniv.assetmanagement.service;
 
 import kangnamuniv.assetmanagement.entity.*;
-import kangnamuniv.assetmanagement.repository.AccountRepository;
 import kangnamuniv.assetmanagement.repository.AssetRepository;
-import kangnamuniv.assetmanagement.repository.BondRepository;
 import kangnamuniv.assetmanagement.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -99,9 +97,7 @@ public class AssetService {
     }
 
     //추후 부동산 평가금액 입력 필요.
-    public void saveAllMemberAsset() {
-
-        List<Member> members = memberRepository.findAllMemberHaveConnectedId();
+    public void saveAllMemberAsset(List<Member> members) {
 
         for (Member member : members) {
             saveAsset(member, getMemberCash(member), getMemberStockValuation(member), bondService.getBondValuationByMember(member), new BigDecimal(0));
