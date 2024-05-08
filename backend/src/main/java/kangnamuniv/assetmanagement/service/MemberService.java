@@ -27,9 +27,9 @@ public class MemberService {
     public void registerMember(Member member) throws Exception {
 
         String loginId = member.getLogin_id();
-        List<Member> foundMembers = memberRepository.findByLoginId(loginId);
+        Member foundMember = memberRepository.findByLoginId(loginId);
 
-        if(!foundMembers.isEmpty()) {
+        if(foundMember != null) {
             throw new Exception("이미 존재하는 아이디입니다.");
         }
         else {
@@ -40,8 +40,7 @@ public class MemberService {
     }
 
     public boolean passwordValidation(Member member) {
-        List<Member> foundMembers = memberRepository.findByLoginId(member.getLogin_id());
-        Member foundMember = foundMembers.get(0);
+        Member foundMember = memberRepository.findByLoginId(member.getLogin_id());
         boolean matches = PasswordUtil.matches(member.getPassword(), foundMember.getPassword());
         if(matches) return true;
         else return false;
@@ -52,7 +51,7 @@ public class MemberService {
     }
 
     public String getConnectedIdByLoginId(String login_id) {
-        Member foundMember = memberRepository.findByLoginId(login_id).get(0);
+        Member foundMember = memberRepository.findByLoginId(login_id);
         return foundMember.getConnected_id();
     }
 

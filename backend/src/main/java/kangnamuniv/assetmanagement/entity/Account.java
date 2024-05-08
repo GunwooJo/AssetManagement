@@ -20,7 +20,7 @@ public abstract class Account {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @Column(name = "account_number", length = 30, nullable = false)
+    @Column(name = "account_number", length = 30, nullable = false, unique = true)
     private String accountNumber;
 
     @Column(length = 10, nullable = false)
@@ -29,4 +29,6 @@ public abstract class Account {
     @Column(name = "business_type", length = 20, nullable = false)
     private String businessType;
 
+    @Column(name = "account_name", length = 20, nullable = false)
+    private String accountName;
 }

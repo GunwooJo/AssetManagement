@@ -55,7 +55,7 @@ public class AccountController {
 
     private ResponseEntity<JSONObject> processAccountRegistration(String token, AccountRequestDTO accountRequestDTO) {
         try {
-            accountService.addAccount(accountRequestDTO.getBusinessType(), accountRequestDTO.getLoginType(), accountRequestDTO.getOrganization(), accountRequestDTO.getId(), accountRequestDTO.getPassword(), accountRequestDTO.getBirthday(), accountRequestDTO.getClientType(), token);
+            accountService.addAccount(accountRequestDTO.getBusinessType(), accountRequestDTO.getLoginType(), accountRequestDTO.getOrganization(), accountRequestDTO.getId(), accountRequestDTO.getPassword(), accountRequestDTO.getClientType(), token);
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("message", "계정 등록이 완료되었습니다.");
@@ -106,7 +106,7 @@ public class AccountController {
         }
 
         try {
-            JSONObject ownAccountList = accountService.findOwnAccountList(accountCheckDTO.getOrganization(), accountCheckDTO.getBirthday(), token);
+            JSONObject ownAccountList = accountService.findOwnAccountList(accountCheckDTO.getOrganization(), token);
             return ResponseEntity.status(HttpStatus.OK).body(ownAccountList);
         } catch (Exception e) {
             log.error(e.getMessage());
