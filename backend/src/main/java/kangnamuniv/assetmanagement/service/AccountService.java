@@ -4,8 +4,10 @@ import kangnamuniv.assetmanagement.dto.StockAccountListDTO;
 import kangnamuniv.assetmanagement.dto.TransactionCheckDTO;
 import kangnamuniv.assetmanagement.entity.AccountCurrency;
 import kangnamuniv.assetmanagement.entity.Member;
+import kangnamuniv.assetmanagement.entity.StockAccount;
 import kangnamuniv.assetmanagement.repository.AccountRepository;
 import kangnamuniv.assetmanagement.repository.MemberRepository;
+import kangnamuniv.assetmanagement.repository.StockRepository;
 import kangnamuniv.assetmanagement.util.ApiRequest;
 import kangnamuniv.assetmanagement.util.CommonConstant;
 import kangnamuniv.assetmanagement.util.JwtUtil;
@@ -38,6 +40,7 @@ public class AccountService {
     private final MemberService memberService;
     private final MemberRepository memberRepository;
     private final AccountRepository accountRepository;
+    private final StockRepository stockRepository;
 
     //계정을 등록하여 connectedId 발급.
     public void addAccount(String businessType, String loginType, String organization, String id, String password, String clientType, String token) throws Exception{
@@ -359,6 +362,22 @@ public class AccountService {
 
                     accountRepository.saveStockAccount(foundMember, accountNumber, organization, businessType, depositReceived, accountName);
 
+                    //주식 정보 저장
+                    JSONArray resItemList = (JSONArray) resData.get("resItemList");
+
+                    for (Object item : resItemList) {
+                        JSONObject stock = (JSONObject) item;
+                        String resItemName = stock.get("resItemName").toString();
+                        String resValuationPL = stock.get("resValuationPL").toString();
+                        String resValuationAmt = stock.get("resValuationAmt").toString();
+                        String resQuantity = stock.get("resQuantity").toString();
+                        String resPurchaseAmount = stock.get("resPurchaseAmount").toString();
+                        String resEarningsRate = stock.get("resEarningsRate").toString();
+                        String resAccountCurrency = stock.get("resAccountCurrency").toString();
+
+                        StockAccount foundStockAccount = accountRepository.findStockAccountByAccountNum(accountNumber);
+                        stockRepository.addOrUpdateStock(foundStockAccount, resItemName, resValuationPL, resValuationAmt, Long.parseLong(resQuantity), resPurchaseAmount, resEarningsRate, AccountCurrency.valueOf(resAccountCurrency));
+                    }
                 }
 
             } else if(response.get("data") instanceof JSONObject) {//단일객체로 반환됐을 경우
@@ -372,26 +391,28 @@ public class AccountService {
 
                 String accountName = accountInfo.get(resAccountNum);
                 accountRepository.saveStockAccount(foundMember, resAccountNum, organization, businessType, depositReceived, accountName);
+
+                //주식 정보 저장
+                JSONArray resItemList = (JSONArray) resData.get("resItemList");
+                for (Object item : resItemList) {
+                    JSONObject stock = (JSONObject) item;
+                    String resItemName = stock.get("resItemName").toString();
+                    String resValuationPL = stock.get("resValuationPL").toString();
+                    String resValuationAmt = stock.get("resValuationAmt").toString();
+                    String resQuantity = stock.get("resQuantity").toString();
+                    String resPurchaseAmount = stock.get("resPurchaseAmount").toString();
+                    String resEarningsRate = stock.get("resEarningsRate").toString();
+                    String resAccountCurrency = stock.get("resAccountCurrency").toString();
+
+                    StockAccount foundStockAccount = accountRepository.findStockAccountByAccountNum(resAccountNum);
+                    stockRepository.addOrUpdateStock(foundStockAccount, resItemName, resValuationPL, resValuationAmt, Long.parseLong(resQuantity), resPurchaseAmount, resEarningsRate, AccountCurrency.valueOf(resAccountCurrency));
+                }
             }
 
         }
 
 
     }
-
-//    public void saveLoan() {
-//        JSONArray resLoan = (JSONArray) resData.get("resLoan");
-//
-//        if(!resLoan.isEmpty()) {
-//            for (Object loanObj : resLoan) {
-//                JSONObject resLoanObj = (JSONObject) loanObj;
-//                String resLoanCurrency = resLoanObj.get("resAccountCurrency").toString();
-//                String resLoanBalance = resLoanObj.get("resAccountBalance").toString();
-//                String resAccountNum = resLoanObj.get("resAccount").toString();
-//                accountRepository.updateLoan(resAccountNum, resLoanBalance, AccountCurrency.valueOf(resLoanCurrency));
-//            }
-//        }
-//    }
 
     //은행 계좌정보 업데이트
     public void updateBankAccount(String token) throws IOException, ParseException, InterruptedException {

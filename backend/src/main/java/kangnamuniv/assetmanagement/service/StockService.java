@@ -81,9 +81,9 @@ public class StockService {
     }
 
     public void updateStockAccountAndStockInfo(Member member) throws IOException, ParseException, InterruptedException {
-        String loginIdFromToken = member.getLogin_id();
+        String loginId = member.getLogin_id();
 
-        List<StockAccount> stockAccountList = accountRepository.findStockAccountListByLoginId(loginIdFromToken);
+        List<StockAccount> stockAccountList = accountRepository.findStockAccountListByLoginId(loginId);
 
         //증권사 계좌가 1개인 경우
         if(stockAccountList.size() == 1) {
