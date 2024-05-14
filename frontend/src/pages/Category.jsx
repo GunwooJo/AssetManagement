@@ -28,11 +28,12 @@ export default function Category() {
       <View style={{ alignSelf: "center" }}>
         <PChart data={pieData}/>
       </View>
-      <View style={{ alignSelf: "center" }}>
-        <Text variant='headlineMedium'>AAA : XX%</Text>
-        <Text variant='headlineMedium'>AAA : XX%</Text>
-        <Text variant='headlineMedium'>AAA : XX%</Text>
-        <Text variant='headlineMedium'>AAA : XX%</Text>
+      <View style={{ alignSelf: "center", marginTop: 10 }}>
+        <Text variant='headlineMedium'>식비 : <Text style={{ color: "#ABDEE6", backgroundColor: "black" }}>45%</Text></Text>
+        <Text variant='headlineMedium'>교통 : <Text style={{ color: "#CBAACB", backgroundColor: "black" }}>30%</Text></Text>
+        <Text variant='headlineMedium'>생활 : <Text style={{ color: "#FFFFB5", backgroundColor: "black" }}>15%</Text></Text>
+        <Text variant='headlineMedium'>여가 : <Text style={{ color: "#FFCCB6", backgroundColor: "black" }}>10%</Text></Text>
+        <Text variant='headlineMedium'>기타 : <Text style={{ color: "#F3B0C3", backgroundColor: "black" }}>5%</Text></Text>
       </View>
     </View>
   );

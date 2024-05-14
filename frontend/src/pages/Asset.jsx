@@ -35,7 +35,7 @@ export default function Asset() {
               {Object.values(pieData).map((v, k) => { return (
                 <View key={k} style={{ flexDirection: 'row' }}>
                   <Text key={v.color} variant='headlineSmall'
-                  style={{ color: v.color, marginLeft: 10 }}>@@</Text>
+                  style={{ color: v.color, marginLeft: 10, backgroundColor: "black" }}>X %</Text>
                   <Text key={v.text} variant='headlineSmall'>{v.text}</Text>
                 </View>
               )})}

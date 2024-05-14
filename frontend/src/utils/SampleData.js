@@ -1,3 +1,14 @@
+import hn_bank from '../assets/hn_bank.svg'
+import kb_bank from '../assets/kb_bank.svg'
+import ma_stock from '../assets/ma_stock.svg'
+import nh_bank from '../assets/nh_bank.svg'
+import nh_stock from '../assets/nh_stock.svg'
+import ss_stock from '../assets/ss_stock.svg'
+import minus from '../assets/minus.svg'
+import blank from '../assets/blank.svg'
+import success from '../assets/success.svg'
+import failure from '../assets/failure.svg'
+
 export const HomeData1 = [
     {
         "id" : 1,
@@ -12,28 +23,28 @@ export const HomeData1 = [
         "id" : 2,
         "type" : "body",
         "button" : false,
-        "mainText" : "A 은행",
+        "mainText" : "하나 은행",
         "subText" : "XXX,XXX,XXX 원",
         //"stackPage" : "pagename"
-        "image" : "src/assets/nh_icon.png"
+        "image" : hn_bank
     },
     {
         "id" : 3,
         "type" : "body",
         "button" : false,
-        "mainText" : "A 은행",
+        "mainText" : "NH 증권",
         "subText" : "XXX,XXX,XXX 원",
         //"stackPage" : "pagename"
-        "image" : "src/assets/nh_icon.png"
+        "image" : nh_stock
     },
     {
         "id" : 4,
         "type" : "body",
         "button" : false,
-        "mainText" : "A 은행",
+        "mainText" : "삼성 증권",
         "subText" : "XXX,XXX,XXX 원",
         //"stackPage" : "pagename"
-        "image" : "src/assets/nh_icon.png"
+        "image" : ss_stock
     },
     {
         "id" : 5,
@@ -60,18 +71,18 @@ export const HomeData2 = [
         "type" : "body",
         "button" : false,
         "mainText" : "오늘 지출",
-        "subText" : "XXX,XXX,XXX 원"
+        "subText" : "XXX,XXX,XXX 원",
         //"stackPage" : "pagename"
-        //"image" : "img/url"
+        "image" : minus
     },
     {
         "id" : 3,
         "type" : "body",
         "button" : false,
         "mainText" : "고정 지출",
-        "subText" : "XXX,XXX,XXX 원"
+        "subText" : "XXX,XXX,XXX 원",
         //"stackPage" : "pagename"
-        //"image" : "img/url"
+        "image" : minus
     }
 ];
 export const pieData = [
@@ -132,64 +143,55 @@ export const AccountListData = [
         "id" : 2,
         "type" : "body",
         "button" : false,
-        "mainText" : "A 은행",
-        "subText" : "XXX,XXX,XXX 원"
+        "mainText" : "국민 은행",
+        "subText" : "XXX,XXX,XXX 원",
         //"stackPage" : "pagename"
-        //"image" : "img/url"
+        "image" : kb_bank
     },
     {
         "id" : 3,
         "type" : "body",
         "button" : false,
-        "mainText" : "A 은행",
-        "subText" : "XXX,XXX,XXX 원"
+        "mainText" : "농협 은행",
+        "subText" : "XXX,XXX,XXX 원",
         //"stackPage" : "pagename"
-        //"image" : "img/url"
+        "image" : nh_bank
     },
     {
         "id" : 4,
         "type" : "body",
         "button" : false,
-        "mainText" : "A 은행",
-        "subText" : "XXX,XXX,XXX 원"
+        "mainText" : "하나 은행",
+        "subText" : "XXX,XXX,XXX 원",
         //"stackPage" : "pagename"
-        //"image" : "img/url"
+        "image" : hn_bank
     },
     {
         "id" : 5,
         "type" : "body",
         "button" : false,
-        "mainText" : "A 은행",
-        "subText" : "XXX,XXX,XXX 원"
+        "mainText" : "NH 증권",
+        "subText" : "XXX,XXX,XXX 원",
         //"stackPage" : "pagename"
-        //"image" : "img/url"
+        "image" : nh_stock
     },
     {
         "id" : 6,
         "type" : "body",
         "button" : false,
-        "mainText" : "A 은행",
-        "subText" : "XXX,XXX,XXX 원"
+        "mainText" : "미래에셋 증권",
+        "subText" : "XXX,XXX,XXX 원",
         //"stackPage" : "pagename"
-        //"image" : "img/url"
+        "image" : ma_stock
     },
     {
         "id" : 7,
         "type" : "body",
         "button" : false,
-        "mainText" : "A 은행",
-        "subText" : "XXX,XXX,XXX 원"
+        "mainText" : "삼성 증권",
+        "subText" : "XXX,XXX,XXX 원",
         //"stackPage" : "pagename"
-        //"image" : "img/url"
-    },
-    {
-        "id" : 8,
-        "type" : "body",
-        "button" : false,
-        "mainText" : "A 은행",
-        "subText" : "XXX,XXX,XXX 원"
-        //"stackPage" : "pagename"
-        //"image" : "img/url"
+        "image" : ss_stock
     }
 ];
 export const AccountRegisterData = [
@@ -200,7 +202,7 @@ export const AccountRegisterData = [
         "mainText" : "국민은행(KB)",
         "subText" : "연동하기",
         "stackPage" : "국민은행(KB)",
-        "image" : "src/assets/nh_icon.png"
+        "image" : kb_bank
     },
     {
         "id" : 2,
@@ -209,7 +211,7 @@ export const AccountRegisterData = [
         "mainText" : "농협은행(NH)",
         "subText" : "연동하기",
         "stackPage" : "농협은행(NH)",
-        "image" : "src/assets/nh_icon.png"
+        "image" : nh_bank
     },
     {
         "id" : 3,
@@ -218,7 +220,7 @@ export const AccountRegisterData = [
         "mainText" : "하나은행",
         "subText" : "연동하기",
         "stackPage" : "하나은행",
-        "image" : "src/assets/nh_icon.png"
+        "image" : hn_bank
     },
     {
         "id" : 4,
@@ -227,7 +229,7 @@ export const AccountRegisterData = [
         "mainText" : "나무(NH투자증권)",
         "subText" : "연동하기",
         "stackPage" : "나무(NH투자증권)",
-        "image" : "src/assets/nh_icon.png"
+        "image" : nh_stock
     },
     {
         "id" : 5,
@@ -236,7 +238,7 @@ export const AccountRegisterData = [
         "mainText" : "미래에셋증권",
         "subText" : "연동하기",
         "stackPage" : "미래에셋증권",
-        "image" : "src/assets/nh_icon.png"
+        "image" : ma_stock
     },
     {
         "id" : 6,
@@ -245,7 +247,7 @@ export const AccountRegisterData = [
         "mainText" : "삼성증권",
         "subText" : "연동하기",
         "stackPage" : "삼성증권",
-        "image" : "src/assets/nh_icon.png"
+        "image" : ss_stock
     }
 ];
 export const DAWData1 = [
@@ -255,7 +257,7 @@ export const DAWData1 = [
         "button" : false,
         "mainText" : "XX 음식점",
         "subText" : "- XXX,XXX원",
-        "image" : "src/assets/nh_icon.png"
+        "image" : blank
     },
     {
         "id" : 2,
@@ -263,6 +265,36 @@ export const DAWData1 = [
         "button" : false,
         "mainText" : "XX 편의점",
         "subText" : "- XX,XXX원",
-        "image" : "src/assets/nh_icon.png"
+        "image" : blank
     },
-]
+];
+export const ChallengeData1 = [
+    {
+        "id" : 1,
+        "type" : "body",
+        "button" : false,
+        "mainText" : "2024년 5월",
+        "subText" : "도전 : XXX,XXX원",
+        "image" : blank
+    }
+];
+export const ChallengeData2 = [
+    {
+        "id" : 1,
+        "type" : "body",
+        "button" : false,
+        "mainText" : "2024년 4월",
+        "subText" : "도전 : XXX,XXX원",
+        "image" : failure
+    }
+];
+export const ChallengeData3 = [
+    {
+        "id" : 1,
+        "type" : "body",
+        "button" : false,
+        "mainText" : "2024년 3월",
+        "subText" : "도전 : XXX,XXX원",
+        "image" : success
+    }
+];

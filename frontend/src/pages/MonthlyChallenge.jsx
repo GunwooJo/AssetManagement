@@ -1,17 +1,18 @@
 import React from "react";
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
+import { Text } from "react-native-paper";
+import Section from "../components/Section";
+import { ChallengeData1, ChallengeData2, ChallengeData3 } from "../utils/SampleData";
 
 export default function MonthlyChallenge() {
-    return (
+  return (
+    <View>
       <View style={{ alignSelf: "center", marginTop: 15 }}>
-        <View>
-          <Text>한 달 예산 지정</Text>
-          <Text>X,XXX,XXX 원</Text>
-        </View>
-        <View style={{ flexDirection: 'column', alignItems: "center"}}>
-          <Text>2024.05</Text>
-          <Text>도전중</Text>
-        </View>
+        <Text variant='headlineLarge'>한 달 예산 지정</Text>
       </View>
-    );
+      <Section data={ChallengeData1}/>
+      <Section data={ChallengeData2}/>
+      <Section data={ChallengeData3}/>
+    </View>
+  );   
 }

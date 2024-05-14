@@ -15,6 +15,10 @@ import AccountRegisterDetail from './src/pages/AccountRegisterDetail';
 import DepositAndWithdraw from './src/pages/DepositAndWithdraw';
 import Category from './src/pages/Category';
 import MonthlyChallenge from './src/pages/MonthlyChallenge';
+import home_w from './src/assets/home_w.svg'
+import asset_w from './src/assets/asset_w.svg'
+import accountbook_w from './src/assets/accountbook_w.svg'
+import chat_w from './src/assets/chat_w.svg'
 
 const HomeStack = createStackNavigator();
 const AccountBookTobTab = createMaterialTopTabNavigator();
@@ -54,10 +58,14 @@ export default function App() {
     <NavigationContainer>
       {isLogin ?
         <Tab.Navigator>
-          <Tab.Screen name="Home" component={HomeTab} options={{ title: '', headerShown: false }}/>
-          <Tab.Screen name="My Asset" component={Asset} options={{ title: '' }}/>
-          <Tab.Screen name="Account Book" component={AccountBookTab} options={{ title: '' }}/>
-          <Tab.Screen name="Chat to AssetManager" component={ConversationalAI} options={{ title: '' }}/>
+          <Tab.Screen name="Home" component={HomeTab}
+          options={{ title: 'HOME', tabBarIcon: home_w, headerShown: false }}/>
+          <Tab.Screen name="My Asset" component={Asset}
+          options={{ title: 'ASSET', tabBarIcon: asset_w }}/>
+          <Tab.Screen name="Account Book" component={AccountBookTab}
+          options={{ title: 'ACCOUNTBOOK', tabBarIcon: accountbook_w }}/>
+          <Tab.Screen name="Chat to AssetManager" component={ConversationalAI}
+          options={{ title: 'CHAT', tabBarIcon: chat_w }}/>
         </Tab.Navigator>
         :
         <Stack.Navigator>
