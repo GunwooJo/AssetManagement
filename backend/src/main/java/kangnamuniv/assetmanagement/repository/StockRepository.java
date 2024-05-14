@@ -5,6 +5,7 @@ import kangnamuniv.assetmanagement.entity.AccountCurrency;
 import kangnamuniv.assetmanagement.entity.Stock;
 import kangnamuniv.assetmanagement.entity.StockAccount;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import java.util.Optional;
 @Repository
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class StockRepository {
 
     private final EntityManager em;
@@ -60,7 +62,8 @@ public class StockRepository {
     }
 
     public void addOrUpdateStock(StockAccount stockAccount, String itemName, String valutaionPl, String valuationAmt, Long quantity, String purchaseAmount, String earningsRate, AccountCurrency accountCurrency) {
-
+        log.debug("함수 호출: addOrUpdateStock");
+        log.debug("평가금액 파라미터: {}", valuationAmt);
         //계좌에 특정 주식 이름으로 된 stock이 있는지 검색.
         Optional<Stock> foundStock = stockAccount.getStockList().stream()
                 .filter(stock -> stock.getStockAccount().equals(stockAccount) && stock.getItemName().equals(itemName))
@@ -68,6 +71,7 @@ public class StockRepository {
 
         //주식이 존재하면 업데이트
         if (foundStock.isPresent()) {
+            log.debug("주식이 존재하면 업데이트");
             Stock stock = foundStock.get();
             stock.setValuationPl(new BigDecimal(valutaionPl));
             stock.setValuationAmt(new BigDecimal(valuationAmt));
@@ -76,7 +80,7 @@ public class StockRepository {
             stock.setEarningsRate(new BigDecimal(earningsRate));
             stock.setAccountCurrency(accountCurrency);
         } else {    //주식이 없으면 생성 후 저장
-
+            log.debug("주식이 없으면 생성 후 저장");
             Stock newStock = new Stock();
             newStock.setStockAccount(stockAccount);
             newStock.setItemName(itemName);
