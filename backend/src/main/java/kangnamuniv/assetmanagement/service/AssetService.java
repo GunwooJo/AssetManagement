@@ -3,6 +3,7 @@ package kangnamuniv.assetmanagement.service;
 import kangnamuniv.assetmanagement.entity.*;
 import kangnamuniv.assetmanagement.repository.AssetRepository;
 import kangnamuniv.assetmanagement.repository.MemberRepository;
+import kangnamuniv.assetmanagement.util.CommonConstant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.parser.ParseException;
@@ -87,8 +88,16 @@ public class AssetService {
                 List<Stock> stockList = ((StockAccount) account).getStockList();
 
                 for (Stock stock : stockList) {
-                    BigDecimal valuationAmt = stock.getValuationAmt();
-                    total = total.add(valuationAmt);
+
+                    if(stock.getAccountCurrency() == AccountCurrency.KRW) {
+                        total = total.add(stock.getValuationAmt());
+                    } else if (stock.getAccountCurrency() == AccountCurrency.USD) {
+                        total = total.add(stock.getValuationAmt().multiply(CommonConstant.wonDollar));
+                    } else if (stock.getAccountCurrency() == AccountCurrency.JPY) {
+                        total = total.add(stock.getValuationAmt().multiply(CommonConstant.wonJpy));
+                    } else if (stock.getAccountCurrency() == AccountCurrency.EUR) {
+                        total = total.add(stock.getValuationAmt().multiply(CommonConstant.wonEuro));
+                    }
                 }
             }
         }
