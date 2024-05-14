@@ -12,12 +12,13 @@ export default function Login({ navigation }) {
         style={{ fontWeight: 'bold' , textAlign: 'center', marginBottom: 20 }}>로그인</Text>
       <TextInput label='아이디(이메일)' value={email} placeholder="example@example.com"
         mode="outlined" onChangeText={email => setEmail(email)}
-        keyboardType="email-address" autoCapitalize="none"
+        keyboardType="email-address" autoCapitalize="none" activeOutlineColor="black"
         returnKeyType="next" style={{ marginBottom: 15 }}/>
       <TextInput label='비밀번호' value={password} placeholder="********"
         mode="outlined" onChangeText={password => setPassword(password)}
-        keyboardType="default" secureTextEntry={true} style={{ marginBottom: 20 }}/>
-      <Button mode="contained" onPress={() => console.log('로그인')}>
+        keyboardType="default" activeOutlineColor="black"
+        secureTextEntry={true} style={{ marginBottom: 20 }}/>
+      <Button mode="contained" buttonColor="#3B3FF6" onPress={() => console.log('로그인')}>
         <Text variant="displayMedium" style={{ color: '#ffffff', fontWeight: 'bold' }}>로그인</Text></Button>
       <List.Section>
         <List.Item title='회원가입' onPress={() => navigation.navigate('Register')}/>

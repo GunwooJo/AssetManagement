@@ -7,7 +7,7 @@ export default function AccountList({navigation}) {
   return(
     <View>
       <ScrollView>
-      <Section data={AccountListData} navigation={navigation}/>
+        <Section data={AccountListData} navigation={navigation} type="elevated"/>
       </ScrollView>
     </View>
   );

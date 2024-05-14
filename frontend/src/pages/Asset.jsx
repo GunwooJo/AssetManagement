@@ -11,19 +11,19 @@ export default function Asset() {
   const nowMonth = today.getMonth() + 1;
   const [month, setMonth] = React.useState(nowMonth);
   React.useEffect(() => {
-    console.log("월 바꾸기");
+    //console.log("월 바꾸기");
   }, [month])
   React.useEffect(() => {
-    console.log("go!");
+    //console.log("go!");
     return() => {
-      console.log("end!");
+      //console.log("end!");
     }
   }, [])
   return (
     <View>
       <ScrollView>
         <View style={{ margin: 20 }}>
-          <View style={{ flexDirection: 'row', marginBottom: 15, alignSelf: 'center'}}>
+          <View style={{ flexDirection: 'row', marginTop: 10, alignSelf: 'center'}}>
             <Button icon='folder' onPress={() => {setMonth(month - 1)}}/>
             <Text variant='headlineMedium'>{month}월</Text>
             <Button icon='folder' onPress={() => {setMonth(month + 1)}}/>
@@ -35,7 +35,7 @@ export default function Asset() {
               {Object.values(pieData).map((v, k) => { return (
                 <View key={k} style={{ flexDirection: 'row' }}>
                   <Text key={v.color} variant='headlineSmall'
-                  style={{ color: v.color, marginLeft: 10 }}>@@</Text>
+                  style={{ color: v.color, marginLeft: 10, backgroundColor: "black" }}>X %</Text>
                   <Text key={v.text} variant='headlineSmall'>{v.text}</Text>
                 </View>
               )})}

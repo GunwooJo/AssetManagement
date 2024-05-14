@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { Text } from 'react-native-paper';
+import Section from '../components/Section';
+import { AccountRegisterData } from '../utils/SampleData';
 
-export default function AccountRegister() {
+export default function AccountRegister({ navigation }) {
   return(
     <View>
-      <Text>AccountRegister!!!!</Text>
+      <Section data={AccountRegisterData} navigation={navigation} type="elevated"/>
     </View>
   );
 }
