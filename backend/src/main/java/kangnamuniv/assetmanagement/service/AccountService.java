@@ -150,14 +150,13 @@ public class AccountService {
         String urlPath = "https://development.codef.io/v1/kr/bank/p/account/account-list";
         HashMap<String, Object> bodyMap = new HashMap<String, Object>();
 
-        String loginIdFromToken = member.getLogin_id();
-        String foundConnectedId = memberService.getConnectedIdByLoginId(loginIdFromToken);
-        Member foundMember = memberRepository.findByLoginId(loginIdFromToken);
+        String foundConnectedId = member.getConnected_id();
 
         bodyMap.put("connectedId", foundConnectedId);
         bodyMap.put("organization", organization);
 
-        LocalDate birthdate = foundMember.getBirthdate();
+        LocalDate birthdate = member.getBirthdate();
+        System.out.println("birthdate = " + birthdate);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");  // '-' 제거
         String formattedBirthdate = birthdate.format(formatter);
 
@@ -457,7 +456,9 @@ public class AccountService {
 
         Set<String> bankOrganizationSet = accountRepository.findBankOrganizationSet(member);
         for (String organization : bankOrganizationSet) {
+            System.out.println("---AccountService.findOwnAccountList 시작---");
             JSONObject resAccounts = findOwnAccountList(organization, member);
+            System.out.println("---AccountService.findOwnAccountList 끝---");
 
             JSONObject resData = (JSONObject) resAccounts.get("data");
 
