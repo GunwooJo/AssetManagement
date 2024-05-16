@@ -102,12 +102,13 @@ public class AccountRepository {
     }
 
     public Set<String> findBankOrganizationSet(Member member) {
-        String loginIdFromToken = member.getLogin_id();
-        Member foundMember = memberRepository.findByLoginId(loginIdFromToken);
-        List<Account> foundAccounts = foundMember.getAccounts();
 
         Set<String> organizations = new HashSet<>();
+
+        List<Account> foundAccounts = member.getAccounts();
+
         for (Account foundAccount : foundAccounts) {
+            log.debug("foundAccount.getOrganization() = " + foundAccount.getOrganization());
             organizations.add(foundAccount.getOrganization());
         }
         return organizations;
