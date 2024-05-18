@@ -2,6 +2,7 @@ package kangnamuniv.assetmanagement.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import kangnamuniv.assetmanagement.dto.BankAccountUpdate;
 import kangnamuniv.assetmanagement.entity.*;
 import kangnamuniv.assetmanagement.util.CommonConstant;
 import kangnamuniv.assetmanagement.util.JwtUtil;
@@ -88,6 +89,18 @@ public class AccountRepository {
         foundBankAccount.setBalance(new BigDecimal(balance));
     }
 
+    public void updateBankAccountByAccountNumber(List<BankAccountUpdate> bankAccountDTOs) {
+
+        for (BankAccountUpdate ba : bankAccountDTOs) {
+            String jpql = "UPDATE BankAccount b SET b.balance = :balance WHERE b.accountNumber = :accountNum";
+            em.createQuery(jpql)
+                    .setParameter("balance", new BigDecimal(ba.getAccountBalance()))
+                    .setParameter("accountNum", ba.getAccountNum())
+                    .executeUpdate();
+        }
+
+    }
+
     // db에 저장된 은행 계좌의 organization들 찾기.
     public Set<String> findBankOrganizationSet(String token) {
         String loginIdFromToken = jwtUtil.getLoginIdFromToken(token);
@@ -108,8 +121,12 @@ public class AccountRepository {
         List<Account> foundAccounts = member.getAccounts();
 
         for (Account foundAccount : foundAccounts) {
-            log.debug("foundAccount.getOrganization() = " + foundAccount.getOrganization());
-            organizations.add(foundAccount.getOrganization());
+
+            if(foundAccount instanceof BankAccount) {
+                log.debug("foundAccount.getOrganization() = " + foundAccount.getOrganization());
+                organizations.add(foundAccount.getOrganization());
+            }
+
         }
         return organizations;
     }
