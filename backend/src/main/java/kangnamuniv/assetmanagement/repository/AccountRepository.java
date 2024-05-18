@@ -3,6 +3,7 @@ package kangnamuniv.assetmanagement.repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import kangnamuniv.assetmanagement.dto.BankAccountUpdate;
+import kangnamuniv.assetmanagement.dto.StockAccountUpdate;
 import kangnamuniv.assetmanagement.entity.*;
 import kangnamuniv.assetmanagement.util.CommonConstant;
 import kangnamuniv.assetmanagement.util.JwtUtil;
@@ -77,6 +78,15 @@ public class AccountRepository {
                 .getSingleResult();
 
         foundStockAccount.setDepositReceived(new BigDecimal(depositReceived));
+    }
+
+    public void updateStockAccountByAccountNumber(List<StockAccountUpdate> scDto) {
+
+        for (StockAccountUpdate s : scDto) {
+            em.createQuery("UPDATE StockAccount s SET s.depositReceived = :depositReceived WHERE s.accountNumber = :accountNum")
+                    .setParameter("depositReceived", s.getDepositReceived())
+                    .setParameter("accountNum", s.getAccountNumber());
+        }
     }
 
     // 은행 계좌 업데이트(잔액)
