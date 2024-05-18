@@ -2,7 +2,6 @@ package kangnamuniv.assetmanagement.dto;
 
 import jakarta.persistence.*;
 import kangnamuniv.assetmanagement.entity.AccountCurrency;
-import kangnamuniv.assetmanagement.entity.StockAccount;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -13,10 +12,6 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StockDTO {
-
-    private Long id;
-
-    private StockAccount stockAccount;
 
     private String itemName;    //상품/종목명
 
