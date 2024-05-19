@@ -85,7 +85,8 @@ public class AccountRepository {
         for (StockAccountUpdate s : scDto) {
             em.createQuery("UPDATE StockAccount s SET s.depositReceived = :depositReceived WHERE s.accountNumber = :accountNum")
                     .setParameter("depositReceived", s.getDepositReceived())
-                    .setParameter("accountNum", s.getAccountNumber());
+                    .setParameter("accountNum", s.getAccountNumber())
+                    .executeUpdate();
         }
     }
 
