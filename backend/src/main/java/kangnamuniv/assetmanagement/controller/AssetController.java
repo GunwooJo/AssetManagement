@@ -45,20 +45,26 @@ public class AssetController {
         List<Member> memberList = new ArrayList<>();
         memberList.add(foundMember);
 
-        long s1 = System.currentTimeMillis();
-        assetService.updateAllBankAccount(memberList);
-        long e1 = System.currentTimeMillis();
-        log.info("updateAllBankAccount 실행시간: {}ms", e1-s1);
+        try {
+            long s1 = System.currentTimeMillis();
+            assetService.updateAllBankAccount(memberList);
+            long e1 = System.currentTimeMillis();
+            log.info("updateAllBankAccount 실행시간: {}ms", e1-s1);
 
-        long s2 = System.currentTimeMillis();
-        assetService.updateAllStockAccountAndStock(memberList);
-        long e2 = System.currentTimeMillis();
-        log.info("updateAllStockAccountAndStock 실행시간: {}ms", e2-s2);
+            long s2 = System.currentTimeMillis();
+            assetService.updateAllStockAccountAndStock(memberList);
+            long e2 = System.currentTimeMillis();
+            log.info("updateAllStockAccountAndStock 실행시간: {}ms", e2-s2);
 
-        long s3 = System.currentTimeMillis();
-        assetService.saveAllMemberAsset(memberList);
-        long e3 = System.currentTimeMillis();
-        log.info("saveAllMemberAsset 실행시간: {}ms", e3-s3);
+            long s3 = System.currentTimeMillis();
+            assetService.saveAllMemberAsset(memberList);
+            long e3 = System.currentTimeMillis();
+            log.info("saveAllMemberAsset 실행시간: {}ms", e3-s3);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDTO(null, null, e.getMessage()));
+        }
+
 
         return ResponseEntity.ok(new ResponseDTO("모든 자산에 대한 업데이트 후 자산 구성정보를 저장했습니다.", null, null));
     }

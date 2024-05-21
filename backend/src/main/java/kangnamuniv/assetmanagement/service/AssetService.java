@@ -32,6 +32,7 @@ public class AssetService {
                 accountService.updateBankAccount(member);
             } catch (Exception e) {
                 log.error("은행 계좌 업데이트 중 오류 발생: ", e);
+                throw new RuntimeException(e);
             }
 
         }
@@ -107,9 +108,14 @@ public class AssetService {
 
     //추후 부동산 평가금액 입력 필요.
     public void saveAllMemberAsset(List<Member> members) {
-
-        for (Member member : members) {
-            saveAsset(member, getMemberCash(member), getMemberStockValuation(member), bondService.getBondValuationByMember(member), new BigDecimal(0));
+        try {
+            for (Member member : members) {
+                saveAsset(member, getMemberCash(member), getMemberStockValuation(member), bondService.getBondValuationByMember(member), new BigDecimal(0));
+            }
+        } catch (Exception e) {
+            log.error("asset 저장 중 에러 발생: {}", e.getMessage());
+            throw new RuntimeException(e);
         }
+
     }
 }
