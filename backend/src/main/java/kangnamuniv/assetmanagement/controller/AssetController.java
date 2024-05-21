@@ -60,6 +60,6 @@ public class AssetController {
         long e3 = System.currentTimeMillis();
         log.info("saveAllMemberAsset 실행시간: {}ms", e3-s3);
 
-        return ResponseEntity.ok(new ResponseDTO("완료", null, null));
+        return ResponseEntity.ok(new ResponseDTO("모든 자산에 대한 업데이트 후 자산 구성정보를 저장했습니다.", null, null));
     }
 }
