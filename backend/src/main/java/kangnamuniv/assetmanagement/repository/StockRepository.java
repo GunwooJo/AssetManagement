@@ -24,10 +24,11 @@ public class StockRepository {
     private final EntityManager em;
 
     @Transactional(readOnly = true)
-    public Stock findByItemName(String itemName) {
-        return em.createQuery("select s from Stock s where s.itemName = :itemName", Stock.class)
+    public List<Stock> findStockByItemNameAndStockAcount(String itemName, StockAccount stockAccount) {
+        return em.createQuery("select s from Stock s where s.itemName = :itemName and s.stockAccount = :stockAccount", Stock.class)
                 .setParameter("itemName", itemName)
-                .getSingleResult();
+                .setParameter("stockAccount", stockAccount)
+                .getResultList();
     }
 
     public Stock addStock(StockAccount stockAccount, String itemName, String valutaionPl, String valuationAmt, Long quantity, String purchaseAmount, String earningsRate, AccountCurrency accountCurrency) {
@@ -114,9 +115,9 @@ public class StockRepository {
 
         // 새로운 종목 추가 또는 업데이트
         for (StockDTO newStock : newStocks) {
-            Stock foundStock = findByItemName(newStock.getItemName());
+            List<Stock> foundStocks = findStockByItemNameAndStockAcount(newStock.getItemName(), stockAccount);
 
-            if (foundStock == null) {
+            if (foundStocks.isEmpty()) {
 
                 Stock stock = Stock.builder()
                         .purchaseAmount(newStock.getPurchaseAmount())
@@ -132,6 +133,7 @@ public class StockRepository {
                 em.persist(stock);
 
             } else {
+                Stock foundStock = foundStocks.get(0);
                 foundStock.setQuantity(newStock.getQuantity());
                 foundStock.setPurchaseAmount(newStock.getPurchaseAmount());
                 foundStock.setValuationAmt(newStock.getValuationAmt());
