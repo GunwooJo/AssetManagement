@@ -60,10 +60,10 @@ export const HomeData2 = [
     {
         "id" : 1,
         "type" : "head",
-        "button" : true,
+        "button" : false,
         "mainText" : "이번 달 지출",
         "subText" : "XXX,XXX,XXX 원",
-        "stackPage" : "ExpenseList"
+        //"stackPage" : "ExpenseList"
         //"image" : "img/url"
     },
     {
@@ -78,10 +78,10 @@ export const HomeData2 = [
     {
         "id" : 3,
         "type" : "body",
-        "button" : false,
+        "button" : true,
         "mainText" : "고정 지출",
         "subText" : "XXX,XXX,XXX 원",
-        //"stackPage" : "pagename"
+        "stackPage" : "ExpenseList",
         "image" : minus
     }
 ];
@@ -297,4 +297,59 @@ export const ChallengeData3 = [
         "subText" : "도전 : XXX,XXX원",
         "image" : success
     }
+];
+export const ExpenseListData = [
+    {
+        "id" : 1,
+        "type" : "body",
+        "button" : false,
+        "mainText" : "고정 지출1",
+        "subText" : "XXX,XXX 원",
+        //"stackPage" : "ExpenseList"
+        "image" : minus
+    },
+    {
+        "id" : 2,
+        "type" : "body",
+        "button" : false,
+        "mainText" : "고정 지출2",
+        "subText" : "XXX,XXX 원",
+        //"stackPage" : "ExpenseList"
+        "image" : minus
+    },
+    {
+        "id" : 3,
+        "type" : "body",
+        "button" : false,
+        "mainText" : "고정 지출3",
+        "subText" : "XXX,XXX 원",
+        //"stackPage" : "ExpenseList"
+        "image" : minus
+    }
+];
+export const ConversationalAIData = [
+    {
+        "id" : 1,
+        "type" : "user",
+        "text" : "Hello!\nI am USER!!!",
+        "isLoading" : false
+    },
+    {
+        "id" : 2,
+        "type" : "bot",
+        "text" : "Hello! USER~",
+        "isLoading" : false
+    },
+    {
+        "id" : 3,
+        "type" : "user",
+        "text" : "1\n2\n3\n4\n5",
+        "isLoading" : false
+    },
+    {
+        "id" : 4,
+        "type" : "bot",
+        "text" : "loading~",
+        "isLoading" : true
+    },
 ];

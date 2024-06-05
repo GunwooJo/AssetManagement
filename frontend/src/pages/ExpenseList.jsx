@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { View } from 'react-native';
-import { Text } from 'react-native-paper';
+import Section from '../components/Section';
+import { ExpenseListData } from '../utils/SampleData';
 
 export default function ExpenseList() {
   return(
     <View>
-      <Text>expenselist!!!!</Text>
+      <Section data={ExpenseListData}/>
     </View>
   );
 }

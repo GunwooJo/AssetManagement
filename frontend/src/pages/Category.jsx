@@ -1,8 +1,10 @@
 import React from "react";
 import { View } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { IconButton, Text } from 'react-native-paper';
 import PChart from "../components/PieChart";
 import { pieData } from "../utils/SampleData";
+import arrow_fw from '../assets/arrow_fw.svg'
+import arrow_bc from '../assets/arrow_bc.svg'
 
 export default function Category() {
   const today = new Date();
@@ -20,10 +22,10 @@ export default function Category() {
   }, [])
   return (
     <View style={{ margin: 20 }}>
-      <View style={{ flexDirection: 'row', marginBottom: 15, alignSelf: 'center'}}>
-        <Button icon='folder' onPress={() => {setMonth(month - 1)}}/>
+      <View style={{ flexDirection: 'row', marginBottom: 15, alignSelf: 'center', alignItems: 'center' }}>
+        <IconButton icon={arrow_bc} onPress={() => {setMonth(month - 1)}}/>
         <Text variant='headlineMedium'>{month}월</Text>
-        <Button icon='folder' onPress={() => {setMonth(month + 1)}}/>
+        <IconButton icon={arrow_fw} onPress={() => {setMonth(month + 1)}}/>
       </View>
       <View style={{ alignSelf: "center" }}>
         <PChart data={pieData}/>

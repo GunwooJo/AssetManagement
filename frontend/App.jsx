@@ -16,23 +16,28 @@ import DepositAndWithdraw from './src/pages/DepositAndWithdraw';
 import Category from './src/pages/Category';
 import MonthlyChallenge from './src/pages/MonthlyChallenge';
 import home_w from './src/assets/home_w.svg'
+import home_b from './src/assets/home_b.svg'
 import asset_w from './src/assets/asset_w.svg'
+import asset_b from './src/assets/asset_b.svg'
 import accountbook_w from './src/assets/accountbook_w.svg'
+import accountbook_b from './src/assets/accountbook_b.svg'
 import chat_w from './src/assets/chat_w.svg'
+import chat_b from './src/assets/chat_b.svg'
 
 const HomeStack = createStackNavigator();
 const AccountBookTobTab = createMaterialTopTabNavigator();
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-var isLogin = true;
+let isLogin = true;
+let focusedTab = '';
 
 function HomeTab() {
   return(
     <HomeStack.Navigator>
-      <HomeStack.Screen name="HomeTab" component={Home} options={{ title: '' }}/>
-      <HomeStack.Screen name="AccountList" component={AccountList} options={{ title: '' }}/>
-      <HomeStack.Screen name="ExpenseList" component={ExpenseList} options={{ title: '' }}/>
-      <HomeStack.Screen name="AccountRegister" component={AccountRegister} options={{ title: '' }}/>
+      <HomeStack.Screen name="HomeTab" component={Home} options={{ title: 'ASSETMANAGEMENT' }}/>
+      <HomeStack.Screen name="AccountList" component={AccountList} options={{ title: '나의 계좌' }}/>
+      <HomeStack.Screen name="ExpenseList" component={ExpenseList} options={{ title: '고정 지출 내역' }}/>
+      <HomeStack.Screen name="AccountRegister" component={AccountRegister} options={{ title: '계좌 추가하기' }}/>
       <HomeStack.Screen name="국민은행(KB)" component={AccountRegisterDetail} options={{ title: '' }}/>
       <HomeStack.Screen name="농협은행(NH)" component={AccountRegisterDetail} options={{ title: '' }}/>
       <HomeStack.Screen name="하나은행" component={AccountRegisterDetail} options={{ title: '' }}/>
@@ -58,14 +63,34 @@ export default function App() {
     <NavigationContainer>
       {isLogin ?
         <Tab.Navigator>
-          <Tab.Screen name="Home" component={HomeTab}
-          options={{ title: 'HOME', tabBarIcon: home_w, headerShown: false }}/>
-          <Tab.Screen name="My Asset" component={Asset}
-          options={{ title: 'ASSET', tabBarIcon: asset_w }}/>
-          <Tab.Screen name="Account Book" component={AccountBookTab}
-          options={{ title: 'ACCOUNTBOOK', tabBarIcon: accountbook_w }}/>
-          <Tab.Screen name="Chat to AssetManager" component={ConversationalAI}
-          options={{ title: 'CHAT', tabBarIcon: chat_w }}/>
+          {focusedTab == 'Home'?
+            <Tab.Screen name="Home" component={HomeTab}
+            options={{ title: '홈', tabBarIcon: home_b, headerShown: false }}/>
+          :
+            <Tab.Screen name="Home" component={HomeTab}
+            options={{ title: '홈', tabBarIcon: home_w, headerShown: false }}/>
+          }
+          {focusedTab == 'Asset'?
+            <Tab.Screen name="My Asset" component={Asset}
+            options={{ title: '나의 자산', tabBarIcon: asset_b }}/>
+          :
+            <Tab.Screen name="My Asset" component={Asset}
+            options={{ title: '나의 자산', tabBarIcon: asset_w }}/>
+          }
+          {focusedTab == 'Account Book'?
+            <Tab.Screen name="Account Book" component={AccountBookTab}
+            options={{ title: '가계부', tabBarIcon: accountbook_b }}/>
+          :
+            <Tab.Screen name="Account Book" component={AccountBookTab}
+            options={{ title: '가계부', tabBarIcon: accountbook_w }}/>
+          }
+          {focusedTab == 'Chat to AssetManager'?
+            <Tab.Screen name="Chat to AssetManager" component={ConversationalAI}
+            options={{ title: '도우미 챗', tabBarIcon: chat_b }}/>
+          :
+            <Tab.Screen name="Chat to AssetManager" component={ConversationalAI}
+            options={{ title: '도우미 챗', tabBarIcon: chat_w }}/>
+          }
         </Tab.Navigator>
         :
         <Stack.Navigator>

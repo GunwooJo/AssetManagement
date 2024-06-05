@@ -8,8 +8,8 @@ const Section = ({data, navigation, type}) => (
     <Card mode={type}
     style={{ backgroundColor: "#FFFFFF", paddingTop: 10, paddingBottom: 10, borderWidth: 0.3 }}>
       {Object.values(data).map((v) => {
-        if (v.type == "head") {
-          if (v.button == true) {
+        if(v.type == "head") {
+          if(v.button == true) {
             return (
               <TouchableRipple key={v.id}
               onPress={() => {navigation.navigate(v.stackPage)}}>
@@ -26,8 +26,8 @@ const Section = ({data, navigation, type}) => (
             )
           }
         }
-        else if (v.type == 'body') {
-          if (v.button == true) {
+        else if(v.type == 'body') {
+          if(v.button == true) {
             return (
               <TouchableRipple key={v.id}
               onPress={() => {navigation.navigate(v.stackPage)}}>
@@ -47,7 +47,7 @@ const Section = ({data, navigation, type}) => (
           }
         }
         else {
-          if (v.button == true) {
+          if(v.button == true) {
             return (
               <TouchableRipple key={v.id}
               onPress={() => {navigation.navigate(v.stackPage)}}>

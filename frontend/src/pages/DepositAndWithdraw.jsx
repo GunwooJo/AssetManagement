@@ -1,8 +1,10 @@
 import React from "react";
 import { View } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { IconButton, Text } from 'react-native-paper';
 import { DAWData1 } from "../utils/SampleData";
 import Section from "../components/Section";
+import arrow_fw from '../assets/arrow_fw.svg'
+import arrow_bc from '../assets/arrow_bc.svg'
 
 export default function DepositAndWithdraw() {
   const today = new Date();
@@ -20,17 +22,17 @@ export default function DepositAndWithdraw() {
   }, [])
   return (
     <View style={{ flexDirection: 'column' }}>
-      <View style={{ flexDirection: 'row', marginTop: 10, alignSelf: 'center'}}>
-        <Button icon='folder' onPress={() => {setMonth(month - 1)}}/>
+      <View style={{ flexDirection: 'row', marginTop: 10, alignSelf: 'center', alignItems: 'center'}}>
+        <IconButton icon={arrow_bc} onPress={() => {setMonth(month - 1)}}/>
         <Text variant='headlineMedium'>{month}월</Text>
-        <Button icon='folder' onPress={() => {setMonth(month + 1)}}/>
+        <IconButton icon={arrow_fw} onPress={() => {setMonth(month + 1)}}/>
       </View>
       <View>
-          <Text variant='titleLarge' style={{ marginLeft: 20 }}>- 5/03</Text>
+          <Text variant='titleLarge' style={{ marginTop: 15, marginLeft: 20 }}>- 5/03</Text>
           <Section data={DAWData1} type="none"/>
       </View>
       <View>
-          <Text variant='titleLarge' style={{ marginLeft: 20 }}>- 5/01</Text>
+          <Text variant='titleLarge' style={{ marginTop: 15, marginLeft: 20 }}>- 5/01</Text>
           <Section data={DAWData1} type="none"/>
       </View>
     </View>
