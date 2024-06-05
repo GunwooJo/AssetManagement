@@ -1,8 +1,8 @@
 package kangnamuniv.assetmanagement.service;
 
+import kangnamuniv.assetmanagement.dto.AssetDTO;
 import kangnamuniv.assetmanagement.entity.*;
 import kangnamuniv.assetmanagement.repository.AssetRepository;
-import kangnamuniv.assetmanagement.repository.MemberRepository;
 import kangnamuniv.assetmanagement.util.CommonConstant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,7 +23,6 @@ public class AssetService {
     private final AccountService accountService;
     private final AssetRepository assetRepository;
     private final StockService stockService;
-    private final MemberRepository memberRepository;
     private final BondService bondService;
 
     public void updateAllBankAccount(List<Member> members) {
@@ -32,6 +33,7 @@ public class AssetService {
                 accountService.updateBankAccount(member);
             } catch (Exception e) {
                 log.error("은행 계좌 업데이트 중 오류 발생: ", e);
+                throw new RuntimeException(e);
             }
 
         }
@@ -107,9 +109,47 @@ public class AssetService {
 
     //추후 부동산 평가금액 입력 필요.
     public void saveAllMemberAsset(List<Member> members) {
-
-        for (Member member : members) {
-            saveAsset(member, getMemberCash(member), getMemberStockValuation(member), bondService.getBondValuationByMember(member), new BigDecimal(0));
+        try {
+            for (Member member : members) {
+                saveAsset(member, getMemberCash(member), getMemberStockValuation(member), bondService.getBondValuationByMember(member), new BigDecimal(0));
+            }
+        } catch (Exception e) {
+            log.error("asset 저장 중 에러 발생: {}", e.getMessage());
+            throw new RuntimeException(e);
         }
+
+    }
+
+    public List<AssetDTO> findAssetsByMemberAndDates(Member member , LocalDate startDate, LocalDate endDate) {
+
+        if (member == null || startDate == null || endDate == null) {
+            throw new IllegalArgumentException("Member, start date, and end date must not be null");
+        }
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("Start date must not be after end date");
+        }
+
+        List<Asset> foundAssets = assetRepository.findAssetsByMemberAndDates(member, startDate, endDate);
+
+        return assetsToAssetDTOs(foundAssets);
+    }
+
+    //Asset을 AssetDTO로 변환
+    public List<AssetDTO> assetsToAssetDTOs(List<Asset> assets) {
+
+        List<AssetDTO> assetDTOS = new ArrayList<>();
+
+        for (Asset foundAsset : assets) {
+            AssetDTO assetDTO = AssetDTO.builder()
+                    .cash(foundAsset.getCash())
+                    .stockValuation(foundAsset.getStockValuation())
+                    .bondValuation(foundAsset.getBondValuation())
+                    .propertyValuation(foundAsset.getPropertyValuation())
+                    .createdAt(foundAsset.getCreatedAt())
+                    .build();
+
+            assetDTOS.add(assetDTO);
+        }
+        return assetDTOS;
     }
 }

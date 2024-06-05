@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 @Transactional
@@ -39,4 +40,28 @@ public class AssetRepository {
         }
 
     }
+
+    public List<Asset> findAssetsByMemberAndDates(Member member , LocalDate startDate, LocalDate endDate) {
+
+        if (member == null || startDate == null || endDate == null) {
+            throw new IllegalArgumentException("Member, start date, and end date must not be null");
+        }
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("Start date must not be after end date");
+        }
+
+        try {
+            return em.createQuery("select a from Asset a where a.member = :member and a.createdAt between :startDate and :endDate", Asset.class)
+                    .setParameter("member", member)
+                    .setParameter("startDate", startDate)
+                    .setParameter("endDate", endDate)
+                    .getResultList();
+
+        } catch (Exception e) {
+            log.error("Asset 가져오기 실패: ", e);
+            throw new RuntimeException(e);
+        }
+
+    }
+
 }

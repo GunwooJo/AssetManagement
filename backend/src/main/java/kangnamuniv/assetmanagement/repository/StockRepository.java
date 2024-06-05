@@ -1,6 +1,7 @@
 package kangnamuniv.assetmanagement.repository;
 
 import jakarta.persistence.EntityManager;
+import kangnamuniv.assetmanagement.dto.StockDTO;
 import kangnamuniv.assetmanagement.entity.AccountCurrency;
 import kangnamuniv.assetmanagement.entity.Stock;
 import kangnamuniv.assetmanagement.entity.StockAccount;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,9 +24,10 @@ public class StockRepository {
     private final EntityManager em;
 
     @Transactional(readOnly = true)
-    public List<Stock> findByItemName(String itemName) {
-        return em.createQuery("select s from Stock s where s.itemName = :itemName", Stock.class)
+    public List<Stock> findStockByItemNameAndStockAcount(String itemName, StockAccount stockAccount) {
+        return em.createQuery("select s from Stock s where s.itemName = :itemName and s.stockAccount = :stockAccount", Stock.class)
                 .setParameter("itemName", itemName)
+                .setParameter("stockAccount", stockAccount)
                 .getResultList();
     }
 
@@ -91,6 +94,53 @@ public class StockRepository {
             newStock.setEarningsRate(new BigDecimal(earningsRate));
             newStock.setAccountCurrency(accountCurrency);
             em.persist(newStock);
+        }
+    }
+
+    public void updateStock(StockAccount stockAccount, List<StockDTO> newStocks) {
+
+        List<Stock> existingStocks = stockAccount.getStockList();
+        List<String> newStockNames = new ArrayList<>();
+
+        for (StockDTO newStock : newStocks) {
+            newStockNames.add(newStock.getItemName());
+        }
+
+        // 기존 종목 중 새로운 종목에 포함되지 않은 종목 삭제
+        for (Stock existingStock : existingStocks) {
+            if(!newStockNames.contains(existingStock.getItemName())) {
+                em.remove(existingStock);
+            }
+        }
+
+        // 새로운 종목 추가 또는 업데이트
+        for (StockDTO newStock : newStocks) {
+            List<Stock> foundStocks = findStockByItemNameAndStockAcount(newStock.getItemName(), stockAccount);
+
+            if (foundStocks.isEmpty()) {
+
+                Stock stock = Stock.builder()
+                        .purchaseAmount(newStock.getPurchaseAmount())
+                        .quantity(newStock.getQuantity())
+                        .valuationAmt(newStock.getValuationAmt())
+                        .valuationPl(newStock.getValuationPl())
+                        .itemName(newStock.getItemName())
+                        .accountCurrency(newStock.getAccountCurrency())
+                        .stockAccount(stockAccount)
+                        .earningsRate(newStock.getEarningsRate())
+                        .build();
+
+                em.persist(stock);
+
+            } else {
+                Stock foundStock = foundStocks.get(0);
+                foundStock.setQuantity(newStock.getQuantity());
+                foundStock.setPurchaseAmount(newStock.getPurchaseAmount());
+                foundStock.setValuationAmt(newStock.getValuationAmt());
+                foundStock.setValuationPl(newStock.getValuationPl());
+                foundStock.setEarningsRate(newStock.getEarningsRate());
+                em.merge(foundStock);
+            }
         }
     }
 }

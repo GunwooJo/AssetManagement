@@ -1,5 +1,6 @@
 package kangnamuniv.assetmanagement.service;
 
+import kangnamuniv.assetmanagement.dto.BankAccountUpdate;
 import kangnamuniv.assetmanagement.dto.StockAccountListDTO;
 import kangnamuniv.assetmanagement.dto.TransactionCheckDTO;
 import kangnamuniv.assetmanagement.entity.AccountCurrency;
@@ -150,14 +151,12 @@ public class AccountService {
         String urlPath = "https://development.codef.io/v1/kr/bank/p/account/account-list";
         HashMap<String, Object> bodyMap = new HashMap<String, Object>();
 
-        String loginIdFromToken = member.getLogin_id();
-        String foundConnectedId = memberService.getConnectedIdByLoginId(loginIdFromToken);
-        Member foundMember = memberRepository.findByLoginId(loginIdFromToken);
+        String foundConnectedId = member.getConnected_id();
 
         bodyMap.put("connectedId", foundConnectedId);
         bodyMap.put("organization", organization);
 
-        LocalDate birthdate = foundMember.getBirthdate();
+        LocalDate birthdate = member.getBirthdate();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");  // '-' 제거
         String formattedBirthdate = birthdate.format(formatter);
 
@@ -415,55 +414,19 @@ public class AccountService {
     }
 
     //은행 계좌정보 업데이트
-    public void updateBankAccount(String token) throws IOException, ParseException, InterruptedException {
-
-        String loginIdFromToken = jwtUtil.getLoginIdFromToken(token);
-        Member foundMember = memberRepository.findByLoginId(loginIdFromToken);
-
-        Set<String> bankOrganizationSet = accountRepository.findBankOrganizationSet(token);
-        for (String organization : bankOrganizationSet) {
-            JSONObject resAccounts = findOwnAccountList(organization, token);
-
-            JSONObject resData = (JSONObject) resAccounts.get("data");
-
-            //예금/신탁 계좌가 여러개일 경우
-            if(resData.get("resDepositTrust") instanceof JSONArray) {
-                JSONArray resDepositTrustList = (JSONArray) resData.get("resDepositTrust");
-
-                for (Object depositTrust : resDepositTrustList) {
-                    JSONObject jsonDepositTrust = (JSONObject) depositTrust;
-
-                    String accountNum = jsonDepositTrust.get("resAccount").toString();
-                    String resAccountCurrency = jsonDepositTrust.get("resAccountCurrency").toString();
-                    String resAccountBalance = jsonDepositTrust.get("resAccountBalance").toString();
-
-                    accountRepository.updateBankAccountByAccountNumber(resAccountBalance, accountNum, AccountCurrency.valueOf(resAccountCurrency));
-                }
-            } else if (resData.get("resDepositTrust") instanceof JSONObject) {  //계좌가 1개일 경우
-
-                JSONObject jsonDepositTrust = (JSONObject) resData.get("resDepositTrust");
-
-                String accountNum = jsonDepositTrust.get("resAccount").toString();
-                String resAccountCurrency = jsonDepositTrust.get("resAccountCurrency").toString();
-                String resAccountBalance = jsonDepositTrust.get("resAccountBalance").toString();
-
-                accountRepository.updateBankAccountByAccountNumber(resAccountBalance, accountNum, AccountCurrency.valueOf(resAccountCurrency));
-            }
-        }
-    }
-
-    //은행 계좌정보 업데이트
     public void updateBankAccount(Member member) throws IOException, ParseException, InterruptedException {
 
         Set<String> bankOrganizationSet = accountRepository.findBankOrganizationSet(member);
         for (String organization : bankOrganizationSet) {
-            JSONObject resAccounts = findOwnAccountList(organization, member);
 
+            JSONObject resAccounts = findOwnAccountList(organization, member);
             JSONObject resData = (JSONObject) resAccounts.get("data");
 
             //예금/신탁 계좌가 여러개일 경우
             if(resData.get("resDepositTrust") instanceof JSONArray) {
                 JSONArray resDepositTrustList = (JSONArray) resData.get("resDepositTrust");
+
+                List<BankAccountUpdate> bankAccountDTOs = new ArrayList<>();
 
                 for (Object depositTrust : resDepositTrustList) {
                     JSONObject jsonDepositTrust = (JSONObject) depositTrust;
@@ -472,8 +435,12 @@ public class AccountService {
                     String resAccountCurrency = jsonDepositTrust.get("resAccountCurrency").toString();
                     String resAccountBalance = jsonDepositTrust.get("resAccountBalance").toString();
 
-                    accountRepository.updateBankAccountByAccountNumber(resAccountBalance, accountNum, AccountCurrency.valueOf(resAccountCurrency));
+                    bankAccountDTOs.add(new BankAccountUpdate(accountNum, resAccountBalance, resAccountCurrency));
+
                 }
+
+                accountRepository.updateBankAccountByAccountNumber(bankAccountDTOs);
+
             } else if (resData.get("resDepositTrust") instanceof JSONObject) {  //계좌가 1개일 경우
 
                 JSONObject jsonDepositTrust = (JSONObject) resData.get("resDepositTrust");

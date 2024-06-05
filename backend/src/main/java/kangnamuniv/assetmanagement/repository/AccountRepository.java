@@ -2,6 +2,8 @@ package kangnamuniv.assetmanagement.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import kangnamuniv.assetmanagement.dto.BankAccountUpdate;
+import kangnamuniv.assetmanagement.dto.StockAccountUpdate;
 import kangnamuniv.assetmanagement.entity.*;
 import kangnamuniv.assetmanagement.util.CommonConstant;
 import kangnamuniv.assetmanagement.util.JwtUtil;
@@ -78,6 +80,16 @@ public class AccountRepository {
         foundStockAccount.setDepositReceived(new BigDecimal(depositReceived));
     }
 
+    public void updateStockAccountByAccountNumber(List<StockAccountUpdate> scDto) {
+
+        for (StockAccountUpdate s : scDto) {
+            em.createQuery("UPDATE StockAccount s SET s.depositReceived = :depositReceived WHERE s.accountNumber = :accountNum")
+                    .setParameter("depositReceived", s.getDepositReceived())
+                    .setParameter("accountNum", s.getAccountNumber())
+                    .executeUpdate();
+        }
+    }
+
     // 은행 계좌 업데이트(잔액)
     public void updateBankAccountByAccountNumber(String balance, String accountNumber, AccountCurrency accountCurrency) {
 
@@ -86,6 +98,18 @@ public class AccountRepository {
                 .getSingleResult();
 
         foundBankAccount.setBalance(new BigDecimal(balance));
+    }
+
+    public void updateBankAccountByAccountNumber(List<BankAccountUpdate> bankAccountDTOs) {
+
+        for (BankAccountUpdate ba : bankAccountDTOs) {
+            String jpql = "UPDATE BankAccount b SET b.balance = :balance WHERE b.accountNumber = :accountNum";
+            em.createQuery(jpql)
+                    .setParameter("balance", new BigDecimal(ba.getAccountBalance()))
+                    .setParameter("accountNum", ba.getAccountNum())
+                    .executeUpdate();
+        }
+
     }
 
     // db에 저장된 은행 계좌의 organization들 찾기.
@@ -102,13 +126,18 @@ public class AccountRepository {
     }
 
     public Set<String> findBankOrganizationSet(Member member) {
-        String loginIdFromToken = member.getLogin_id();
-        Member foundMember = memberRepository.findByLoginId(loginIdFromToken);
-        List<Account> foundAccounts = foundMember.getAccounts();
 
         Set<String> organizations = new HashSet<>();
+
+        List<Account> foundAccounts = member.getAccounts();
+
         for (Account foundAccount : foundAccounts) {
-            organizations.add(foundAccount.getOrganization());
+
+            if(foundAccount instanceof BankAccount) {
+                log.debug("foundAccount.getOrganization() = " + foundAccount.getOrganization());
+                organizations.add(foundAccount.getOrganization());
+            }
+
         }
         return organizations;
     }
